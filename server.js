@@ -158,6 +158,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
       console.log(`Polling status: ${result.data.status}`);
 
       if (result.data.status === 'succeeded') {
+        console.log('Replicate output:', result.data.output);
         finalImage = result.data.output[0];
         console.log('Final image URL from Replicate:', finalImage);
         break;
