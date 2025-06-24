@@ -12,7 +12,7 @@ if (!process.env.REPLICATE_API_TOKEN) {
 }
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.static('public'));
@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
 app.post('/upload', upload.single('photo'), async (req, res) => {
     const imagePath = req.file.path;
     const filename = req.file.filename;
-    const imageUrl = `http://localhost:${port}/uploads/${filename}`;
+    const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
 
     const styles = [
         'Van Gogh style',
