@@ -90,7 +90,7 @@ app.post('/upload', upload.single('photo'), async (req, res) => {
             input: {
                 init_image: imageUrl,
                 prompt: `a portrait photo in ${selectedStyle}`,
-                strength: 0.2,
+                strength: 0.1,
                 num_inference_steps: 20,
                 guidance_scale: 7.5,
                 width: 512,
