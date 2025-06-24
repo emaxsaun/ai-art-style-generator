@@ -114,32 +114,28 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
       },
     });
 
-    const version = "82bbb4595458d6be142450fc6d8c4d79c936b92bd184dd2d6dd71d0796159819";
+    const version = "ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4";
 
     console.log('Sending Replicate request with input:', {
-      image: imageUrl,
+      init_image: imageUrl,
       prompt: `a portrait photo in ${selectedStyle}`,
-      negative_prompt: "blurry, distorted, ugly, disfigured, low quality",
-      prompt_strength: 0.1,
-      scheduler: "DPMSolver++",
-      num_inference_steps: 25,
-      guidance_scale: 7,
-      width: 768,
-      height: 768
+      strength: 0.1,
+      num_inference_steps: 20,
+      guidance_scale: 7.5,
+      width: 512,
+      height: 512
     });
 
     const start = await replicate.post('/predictions', {
       version,
       input: {
-        image: imageUrl,
+        init_image: imageUrl,
         prompt: `a portrait photo in ${selectedStyle}`,
-        negative_prompt: "blurry, distorted, ugly, disfigured, low quality",
-        prompt_strength: 0.1,
-        scheduler: "DPMSolver++",
-        num_inference_steps: 25,
-        guidance_scale: 7,
-        width: 768,
-        height: 768
+        strength: 0.1,
+        num_inference_steps: 20,
+        guidance_scale: 7.5,
+        width: 512,
+        height: 512
       }
     });
 
