@@ -116,7 +116,7 @@ app.post('/upload', upload.single('photo'), async (req, res) => {
 
         let finalImage;
         let attempts = 0;
-        const maxAttempts = 30;
+        const maxAttempts = 60;
 
         while (attempts < maxAttempts) {
             const result = await axios.get(predictionUrl, {
