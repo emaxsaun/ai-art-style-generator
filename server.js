@@ -159,6 +159,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 
       if (result.data.status === 'succeeded') {
         finalImage = result.data.output[0];
+        console.log('Final image URL from Replicate:', finalImage);
         break;
       } else if (result.data.status === 'failed') {
         console.error('Replicate response:', result.data);
@@ -171,6 +172,10 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 
     if (!finalImage) {
       throw new Error('Image generation timed out.');
+    }
+
+    if (!finalImage || typeof finalImage !== 'string' || !finalImage.startsWith('http')) {
+        throw new Error('Invalid final image URL received.');
     }
 
     res.json({
