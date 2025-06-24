@@ -386,8 +386,12 @@
           countdownNumber--;
           if (countdownNumber === 0) {
             clearCountdown();
-            snapshotCanvas.width = cameraStreamElem.videoWidth;
-            snapshotCanvas.height = cameraStreamElem.videoHeight;
+            const MAX_WIDTH = 768;
+            const originalWidth = cameraStreamElem.videoWidth;
+            const originalHeight = cameraStreamElem.videoHeight;
+            const scale = MAX_WIDTH / originalWidth;
+            snapshotCanvas.width = MAX_WIDTH;
+            snapshotCanvas.height = originalHeight * scale;
             ctx.drawImage(cameraStreamElem, 0, 0, snapshotCanvas.width, snapshotCanvas.height);
             snapshotCanvas.toBlob(blob => {
               const file = new File([blob], 'captured-photo.png', {
@@ -422,7 +426,6 @@
         loadingSpinner.style.display = 'inline-block';
         const formData = new FormData();
         formData.append('photo', fileInput.files[0]);
-        console.log("Submitting file:", fileInput.files[0]);
         try {
           const response = await fetch('/upload', {
             method: 'POST',
