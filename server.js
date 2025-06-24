@@ -53,6 +53,7 @@ app.get('/', (req, res) => {
 app.post('/upload', upload.single('photo'), async (req, res, next) => {
   try {
     if (!req.file) {
+      console.log('req.file is undefined:', req.file);
       return res.status(400).json({ success: false, error: 'No file uploaded' });
     }
 

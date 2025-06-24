@@ -398,9 +398,11 @@
               fileInput.files = dataTransfer.files;
               filenameDisplay.textContent = file.name;
             });
-            cameraStreamElem.style.display = 'none';
-            snapshotCanvas.classList.remove('hidden');
-            createRetakeButton();
+            setTimeout(() => {
+                cameraStreamElem.style.display = 'none';
+                snapshotCanvas.classList.remove('hidden');
+                createRetakeButton();
+            }, 100);
           } else {
             countdownOverlay.textContent = countdownNumber;
           }
@@ -413,11 +415,13 @@
           errorMessage.style.display = 'block';
           return;
         }
+        console.log('Submitting file:', fileInput.files[0]);
         errorMessage.style.display = 'none';
         styleDisplay.textContent = '';
         resultImg.style.display = 'none';
         loadingSpinner.style.display = 'inline-block';
         const formData = new FormData(form);
+        formData.append('photo', fileInput.files[0]);
         try {
           const response = await fetch('/upload', {
             method: 'POST',
