@@ -159,13 +159,19 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 
       if (result.data.status === 'succeeded') {
         console.log('Replicate output:', result.data.output);
-        finalImage = result.data.output[0];
+        if (typeof result.data.output === 'string') {
+          finalImage = result.data.output;
+        } else if (Array.isArray(result.data.output) && result.data.output.length > 0) {
+          finalImage = result.data.output[0];
+        } else {
+          throw new Error('Unexpected output format from Replicate.');
+        }
         console.log('Final image URL from Replicate:', finalImage);
         break;
       } else if (result.data.status === 'failed') {
         console.error('Replicate response:', result.data);
         throw new Error('Image generation failed.');
-      }
+      }      
 
       await new Promise(resolve => setTimeout(resolve, 2000));
       attempts++;
