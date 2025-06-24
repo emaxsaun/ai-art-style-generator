@@ -16,7 +16,6 @@
       body {
         background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
         font-family: 'Poppins', Arial, sans-serif;
-        font-weight: bold;
         min-height: 100vh;
       }
 
@@ -403,9 +402,9 @@
               filenameDisplay.textContent = file.name;
             });
             setTimeout(() => {
-                cameraStreamElem.style.display = 'none';
-                snapshotCanvas.classList.remove('hidden');
-                createRetakeButton();
+              cameraStreamElem.style.display = 'none';
+              snapshotCanvas.classList.remove('hidden');
+              createRetakeButton();
             }, 100);
           } else {
             countdownOverlay.textContent = countdownNumber;
@@ -439,11 +438,11 @@
             styleDisplay.textContent = `Style applied: ${data.message.replace('Image processed in ', '')}`;
             resultImg.src = data.imageUrl;
             resultImg.style.display = 'block';
-        } else {
+          } else {
             console.error('Invalid imageUrl:', data.imageUrl);
             errorMessage.textContent = 'Received invalid image URL.';
             errorMessage.style.display = 'block';
-        }
+          }
         } catch (err) {
           loadingSpinner.style.display = 'none';
           errorMessage.textContent = 'An error occurred. Please try again.';
