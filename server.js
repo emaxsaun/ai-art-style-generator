@@ -120,14 +120,15 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			},
 		});
 
-		const version = "ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4";
+		const version = "15a3689ee13b0d2616e98820eca31d4c3abcd36672df6afce5cb6feb1d66087d";
 
 		console.log('Sending Replicate request with input:', {
-			init_image: imageUrl,
+			image: imageUrl,
 			prompt: `a portrait photo in ${selectedStyle}`,
-			strength: 0.1,
+            num_outputs: 1,
 			num_inference_steps: 20,
 			guidance_scale: 7.5,
+            prompt_strength: 0.8,
 			width: 512,
 			height: 512
 		});
@@ -135,13 +136,14 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 		const start = await replicate.post('/predictions', {
 			version,
 			input: {
-				init_image: imageUrl,
-				prompt: `a portrait photo in ${selectedStyle}`,
-				strength: 0.1,
-				num_inference_steps: 20,
-				guidance_scale: 7.5,
-				width: 512,
-				height: 512
+				image: imageUrl,
+                prompt: `a portrait photo in ${selectedStyle}`,
+                num_outputs: 1,
+                num_inference_steps: 20,
+                guidance_scale: 7.5,
+                prompt_strength: 0.8,
+                width: 512,
+                height: 512
 			}
 		});
 
