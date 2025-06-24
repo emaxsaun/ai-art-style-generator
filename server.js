@@ -85,6 +85,16 @@ app.post('/upload', upload.single('photo'), async (req, res) => {
 
         const version = "ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4";
 
+        console.log('Sending Replicate request with input:', {
+            init_image: imageUrl,
+            prompt: `a portrait photo in ${selectedStyle}`,
+            strength: 0.1,
+            num_inference_steps: 20,
+            guidance_scale: 7.5,
+            width: 512,
+            height: 512,
+          });          
+
         const start = await replicate.post('/predictions', {
             version,
             input: {
