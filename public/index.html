@@ -425,14 +425,17 @@
           });
           const data = await response.json();
           loadingSpinner.style.display = 'none';
-          if (data.success && data.imageUrl) {
+          console.log('Response data:', data);
+          if (typeof data.imageUrl === 'string' && data.imageUrl.trim().length > 0) {
+            console.log('Setting image src to:', data.imageUrl);
             styleDisplay.textContent = `Style applied: ${data.message.replace('Image processed in ', '')}`;
             resultImg.src = data.imageUrl;
             resultImg.style.display = 'block';
-          } else {
-            errorMessage.textContent = 'Image generation failed. Please try again.';
+        } else {
+            console.error('Invalid imageUrl:', data.imageUrl);
+            errorMessage.textContent = 'Received invalid image URL.';
             errorMessage.style.display = 'block';
-          }
+        }
         } catch (err) {
           loadingSpinner.style.display = 'none';
           errorMessage.textContent = 'An error occurred. Please try again.';
