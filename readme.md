@@ -45,4 +45,6 @@ git clone https://github.com/emaxsaun/ai-art-style-generator.git
 cd ai-art-style-generator
 ```
 
+Note - Make sure to add a `.env` file with `REPLICATE_API_TOKEN=<YOUR_ACTUAL_API_TOKEN>`
+
 Have fun!!
