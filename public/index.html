@@ -16,6 +16,7 @@
       body {
         background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
         font-family: 'Poppins', Arial, sans-serif;
+        font-weight: bold;
         min-height: 100vh;
       }
 
@@ -182,6 +183,16 @@
         animation: spin 1s linear infinite;
       }
 
+      #toggle-camera {
+        display: inline-block;
+      }
+
+      @media (min-width: 768px) {
+        #toggle-camera {
+          visibility: hidden;
+        }
+      }
+
       #camera-buttons button {
         display: block;
         width: 100%;
@@ -206,6 +217,7 @@
           <div id="camera-modal" class="hidden">
             <video id="camera-stream" autoplay playsinline></video>
             <button id="take-photo" type="button">Take Photo</button>
+            <button id="toggle-camera" type="button">🔄 Switch Camera</button>
             <canvas id="snapshot" class="hidden"></canvas>
             <div id="camera-buttons">
               <button id="close-camera" type="button">Cancel</button>
@@ -259,26 +271,23 @@
         }
       });
       const openCameraBtn = document.getElementById('open-camera');
+      const toggleCameraBtn = document.getElementById('toggle-camera');
       const cameraModal = document.getElementById('camera-modal');
       const cameraStreamElem = document.getElementById('camera-stream');
       const takePhotoBtn = document.getElementById('take-photo');
       const snapshotCanvas = document.getElementById('snapshot');
       const closeCameraBtn = document.getElementById('close-camera');
       let cameraStream;
+      let useFrontCamera = false;
       let countdownInterval;
       let countdownNumber;
       const ctx = snapshotCanvas.getContext('2d');
-      openCameraBtn.addEventListener('click', async () => {
-        cameraModal.classList.remove('hidden');
-        snapshotCanvas.classList.add('hidden');
-        cameraStreamElem.style.display = 'block';
-        takePhotoBtn.style.display = 'inline-block';
-        countdownOverlay.style.display = 'none';
-        if (retakeBtn) retakeBtn.remove();
+      async function startCamera() {
+        const facingMode = useFrontCamera ? 'user' : 'environment';
         try {
           cameraStream = await navigator.mediaDevices.getUserMedia({
             video: {
-              facingMode: 'environment'
+              facingMode
             }
           });
           cameraStreamElem.srcObject = cameraStream;
@@ -286,6 +295,26 @@
           alert('Could not access camera: ' + err.message);
           cameraModal.classList.add('hidden');
         }
+      }
+      function stopCamera() {
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(track => track.stop());
+          cameraStream = null;
+        }
+      }
+      openCameraBtn.addEventListener('click', async () => {
+        cameraModal.classList.remove('hidden');
+        snapshotCanvas.classList.add('hidden');
+        cameraStreamElem.style.display = 'block';
+        takePhotoBtn.style.display = 'inline-block';
+        countdownOverlay.style.display = 'none';
+        if (retakeBtn) retakeBtn.remove();
+        await startCamera();
+      });
+      toggleCameraBtn.addEventListener('click', async () => {
+        useFrontCamera = !useFrontCamera;
+        stopCamera();
+        await startCamera();
       });
       closeCameraBtn.addEventListener('click', () => {
         stopCamera();
@@ -304,7 +333,7 @@
       countdownOverlay.style.top = 0;
       countdownOverlay.style.left = 0;
       countdownOverlay.style.right = 0;
-      countdownOverlay.style.bottom = '74px';
+      countdownOverlay.style.bottom = '143px';
       countdownOverlay.style.display = 'flex';
       countdownOverlay.style.alignItems = 'center';
       countdownOverlay.style.justifyContent = 'center';
@@ -319,32 +348,23 @@
       countdownOverlay.style.display = 'none';
       cameraModal.style.position = 'relative';
       cameraModal.appendChild(countdownOverlay);
-
       function clearCountdown() {
         clearInterval(countdownInterval);
         countdownOverlay.style.display = 'none';
       }
-
-      function stopCamera() {
-        if (cameraStream) {
-          cameraStream.getTracks().forEach(track => track.stop());
-          cameraStream = null;
-        }
-      }
       let retakeBtn;
-
       function createRetakeButton() {
         retakeBtn = document.createElement('button');
-        const cameraButtons = document.getElementById('camera-buttons');
         retakeBtn.textContent = 'Retake';
         retakeBtn.type = 'button';
-        retakeBtn.style.marginTop = '12px';
+        retakeBtn.style.marginBottom = '8px';
         retakeBtn.style.background = '#555';
         retakeBtn.style.color = 'white';
         retakeBtn.style.border = 'none';
         retakeBtn.style.padding = '10px 20px';
         retakeBtn.style.borderRadius = '10px';
         retakeBtn.style.cursor = 'pointer';
+        const cameraButtons = document.getElementById('camera-buttons');
         cameraButtons.insertBefore(retakeBtn, closeCameraBtn);
         retakeBtn.addEventListener('click', () => {
           snapshotCanvas.classList.add('hidden');
