@@ -420,8 +420,9 @@
         styleDisplay.textContent = '';
         resultImg.style.display = 'none';
         loadingSpinner.style.display = 'inline-block';
-        const formData = new FormData(form);
+        const formData = new FormData();
         formData.append('photo', fileInput.files[0]);
+        console.log("Submitting file:", fileInput.files[0]);
         try {
           const response = await fetch('/upload', {
             method: 'POST',
