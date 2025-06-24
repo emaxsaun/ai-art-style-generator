@@ -151,12 +151,12 @@ app.post('/upload', upload.single('photo'), async (req, res) => {
             success: false,
             error: err?.message || 'Image generation failed.'
         });
-    } finally {
-        try {
-            await fs.promises.unlink(imagePath);
-        } catch (err) {
-            console.error('Failed to delete uploaded image:', err);
-        }
+    }
+    try {
+        await fs.promises.unlink(imagePath);
+        console.log('Uploaded image deleted after processing');
+    } catch (err) {
+        console.error('Failed to delete uploaded image:', err);
     }
 });
 
