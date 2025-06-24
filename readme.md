@@ -2,6 +2,8 @@
 
 A simple web app that lets users upload a photo and generates AI-powered art in various styles using Stable Diffusion on the Replicate API.
 
+([Demo](https://ai-art-style-generator-production.up.railway.app/))
+
 ---
 
 ## Features
@@ -42,4 +44,5 @@ A simple web app that lets users upload a photo and generates AI-powered art in 
 git clone https://github.com/emaxsaun/ai-art-style-generator.git
 cd ai-art-style-generator
 ```
+
 Have fun!!
