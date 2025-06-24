@@ -40,6 +40,7 @@
 
       form {
         margin-bottom: 30px;
+        font-weight: bold;
       }
 
       .file-upload-wrapper {
@@ -49,6 +50,55 @@
         gap: 12px;
         flex-wrap: wrap;
         margin-bottom: 20px;
+      }
+
+      #drop-area {
+        border: 2px dashed #fff;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        color: #fff;
+        font-weight: 600;
+        margin-bottom: 20px;
+        transition: background 0.3s ease;
+      }
+
+      #drop-area.dragover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      #camera-modal {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+
+      #camera-modal.hidden {
+        display: none;
+      }
+
+      video,
+      canvas {
+        max-width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      canvas.hidden {
+        display: block;
+        opacity: 0;
+        max-width: 100px;
+        transition: opacity 0.3s ease;
+      }
+
+      canvas.show-preview {
+        opacity: 1;
       }
 
       input[type="file"] {
@@ -78,7 +128,6 @@
 
       button {
         background: #ff7e5f;
-        /* warm coral */
         color: white;
         border: none;
         padding: 15px 36px;
@@ -133,6 +182,12 @@
         animation: spin 1s linear infinite;
       }
 
+      #camera-buttons button {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
       @keyframes spin {
         to {
           transform: rotate(360deg);
@@ -147,7 +202,19 @@
         <div class="file-upload-wrapper">
           <label for="photo" class="custom-file-label">Choose File</label>
           <input type="file" name="photo" id="photo" accept="image/*" />
+          <button id="open-camera" type="button">📷 Use Camera</button>
+          <div id="camera-modal" class="hidden">
+            <video id="camera-stream" autoplay playsinline></video>
+            <button id="take-photo" type="button">Take Photo</button>
+            <canvas id="snapshot" class="hidden"></canvas>
+            <div id="camera-buttons">
+              <button id="close-camera" type="button">Cancel</button>
+            </div>
+          </div>
           <span id="filename-display">No file chosen</span>
+        </div>
+        <div id="drop-area">
+          <p>Or drag and drop an image here</p>
         </div>
         <br />
         <br />
@@ -169,15 +236,163 @@
       fileInput.addEventListener('change', () => {
         filenameDisplay.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
       });
+      const dropArea = document.getElementById('drop-area');
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropArea.classList.add('dragover');
+        });
+      });
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropArea.classList.remove('dragover');
+        });
+      });
+      dropArea.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length > 0 && files[0].type.startsWith('image/')) {
+          fileInput.files = files;
+          filenameDisplay.textContent = files[0].name;
+        }
+      });
+      const openCameraBtn = document.getElementById('open-camera');
+      const cameraModal = document.getElementById('camera-modal');
+      const cameraStreamElem = document.getElementById('camera-stream');
+      const takePhotoBtn = document.getElementById('take-photo');
+      const snapshotCanvas = document.getElementById('snapshot');
+      const closeCameraBtn = document.getElementById('close-camera');
+      let cameraStream;
+      let countdownInterval;
+      let countdownNumber;
+      const ctx = snapshotCanvas.getContext('2d');
+      openCameraBtn.addEventListener('click', async () => {
+        cameraModal.classList.remove('hidden');
+        snapshotCanvas.classList.add('hidden');
+        cameraStreamElem.style.display = 'block';
+        takePhotoBtn.style.display = 'inline-block';
+        countdownOverlay.style.display = 'none';
+        if (retakeBtn) retakeBtn.remove();
+        try {
+          cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              facingMode: 'environment'
+            }
+          });
+          cameraStreamElem.srcObject = cameraStream;
+        } catch (err) {
+          alert('Could not access camera: ' + err.message);
+          cameraModal.classList.add('hidden');
+        }
+      });
+      closeCameraBtn.addEventListener('click', () => {
+        stopCamera();
+        cameraModal.classList.add('hidden');
+        clearCountdown();
+        snapshotCanvas.classList.add('hidden');
+        cameraStreamElem.style.display = 'block';
+        takePhotoBtn.style.display = 'inline-block';
+        countdownOverlay.style.display = 'none';
+        if (retakeBtn) retakeBtn.remove();
+        fileInput.value = '';
+        filenameDisplay.textContent = 'No file chosen';
+      });
+      const countdownOverlay = document.createElement('div');
+      countdownOverlay.style.position = 'absolute';
+      countdownOverlay.style.top = 0;
+      countdownOverlay.style.left = 0;
+      countdownOverlay.style.right = 0;
+      countdownOverlay.style.bottom = '74px';
+      countdownOverlay.style.display = 'flex';
+      countdownOverlay.style.alignItems = 'center';
+      countdownOverlay.style.justifyContent = 'center';
+      countdownOverlay.style.fontSize = '6rem';
+      countdownOverlay.style.color = 'white';
+      countdownOverlay.style.textShadow = '0 0 10px black';
+      countdownOverlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
+      countdownOverlay.style.zIndex = 10;
+      countdownOverlay.style.borderRadius = '12px';
+      countdownOverlay.style.userSelect = 'none';
+      countdownOverlay.style.pointerEvents = 'none';
+      countdownOverlay.style.display = 'none';
+      cameraModal.style.position = 'relative';
+      cameraModal.appendChild(countdownOverlay);
+
+      function clearCountdown() {
+        clearInterval(countdownInterval);
+        countdownOverlay.style.display = 'none';
+      }
+
+      function stopCamera() {
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(track => track.stop());
+          cameraStream = null;
+        }
+      }
+      let retakeBtn;
+
+      function createRetakeButton() {
+        retakeBtn = document.createElement('button');
+        const cameraButtons = document.getElementById('camera-buttons');
+        retakeBtn.textContent = 'Retake';
+        retakeBtn.type = 'button';
+        retakeBtn.style.marginTop = '12px';
+        retakeBtn.style.background = '#555';
+        retakeBtn.style.color = 'white';
+        retakeBtn.style.border = 'none';
+        retakeBtn.style.padding = '10px 20px';
+        retakeBtn.style.borderRadius = '10px';
+        retakeBtn.style.cursor = 'pointer';
+        cameraButtons.insertBefore(retakeBtn, closeCameraBtn);
+        retakeBtn.addEventListener('click', () => {
+          snapshotCanvas.classList.add('hidden');
+          retakeBtn.remove();
+          takePhotoBtn.style.display = 'inline-block';
+          countdownOverlay.style.display = 'none';
+          cameraStreamElem.style.display = 'block';
+          fileInput.value = '';
+          filenameDisplay.textContent = 'No file chosen';
+        });
+      }
+      takePhotoBtn.addEventListener('click', () => {
+        countdownNumber = 3;
+        countdownOverlay.textContent = countdownNumber;
+        countdownOverlay.style.display = 'flex';
+        takePhotoBtn.style.display = 'none';
+        cameraStreamElem.style.display = 'block';
+        countdownInterval = setInterval(() => {
+          countdownNumber--;
+          if (countdownNumber === 0) {
+            clearCountdown();
+            snapshotCanvas.width = cameraStreamElem.videoWidth;
+            snapshotCanvas.height = cameraStreamElem.videoHeight;
+            ctx.drawImage(cameraStreamElem, 0, 0, snapshotCanvas.width, snapshotCanvas.height);
+            snapshotCanvas.toBlob(blob => {
+              const file = new File([blob], 'captured-photo.png', {
+                type: 'image/png'
+              });
+              const dataTransfer = new DataTransfer();
+              dataTransfer.items.add(file);
+              fileInput.files = dataTransfer.files;
+              filenameDisplay.textContent = file.name;
+            });
+            cameraStreamElem.style.display = 'none';
+            snapshotCanvas.classList.remove('hidden');
+            createRetakeButton();
+          } else {
+            countdownOverlay.textContent = countdownNumber;
+          }
+        }, 1000);
+      });
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
-
         if (!fileInput.files || fileInput.files.length === 0) {
-            errorMessage.textContent = 'Please select an image file before generating.';
-            errorMessage.style.display = 'block';
-            return;
+          errorMessage.textContent = 'Please select an image file before generating.';
+          errorMessage.style.display = 'block';
+          return;
         }
-
         errorMessage.style.display = 'none';
         styleDisplay.textContent = '';
         resultImg.style.display = 'none';
