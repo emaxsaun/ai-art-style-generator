@@ -16,77 +16,95 @@ const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.static('public'));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Multer storage config to keep original file extension
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+  console.log('Created uploads directory');
+}
+app.use('/uploads', express.static(uploadsDir));
+
+// Multer config with file size limit and image-only filter
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
+  destination: (req, file, cb) => cb(null, uploadsDir),
+  filename: (req, file, cb) => {
+    // preserve original extension, safe filename
     const ext = path.extname(file.originalname);
-    // Use fieldname + timestamp + original extension
-    const filename = file.fieldname + '-' + Date.now() + ext;
-    cb(null, filename);
+    const base = path.basename(file.originalname, ext).replace(/\W+/g, '-');
+    cb(null, `${base}-${Date.now()}${ext}`);
   }
 });
-
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'));
+    }
+  }
+});
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
-app.post('/upload', upload.single('photo'), async (req, res) => {
-  const imagePath = req.file.path;
-  const filename = req.file.filename;
-  const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
-
-  const styles = [
-    'Van Gogh style',
-    'Cyberpunk portrait',
-    'Studio Ghibli character',
-    '80s comic book art',
-    'Fantasy oil painting',
-    'Pencil sketch',
-    'Watercolor painting',
-    'Pixar-style 3D character',
-    'Futuristic hologram',
-    'Pop art portrait',
-    'Charcoal drawing',
-    'Baroque oil painting',
-    'Modern minimalism',
-    'Neon-lit synthwave',
-    'Dark fantasy concept art',
-    'Line art illustration',
-    'Manga character',
-    'Surreal dreamscape',
-    'Ink and wash drawing',
-    'Comic strip style',
-    'Vaporwave aesthetic',
-    'Impressionist brush strokes',
-    'Post-apocalyptic wasteland',
-    'Mythical creature transformation',
-    'Photorealistic render',
-    'Low-poly 3D style',
-    'Art nouveau flourish',
-    'Renaissance portrait',
-    'Cubist interpretation',
-    'Steampunk gear-laden design',
-    'Afrofuturism vision',
-    'Vintage newspaper print',
-    'Graffiti street art',
-    'Cel-shaded anime',
-    'Ethereal fairy world',
-    'Dreamlike double exposure',
-    'Moody film noir'
-  ];
-
-  const selectedStyle = styles[Math.floor(Math.random() * styles.length)];
-  console.log(`Selected style for this generation: ${selectedStyle}`);
-  console.log('Uploaded file URL:', imageUrl);
-
+app.post('/upload', upload.single('photo'), async (req, res, next) => {
   try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: 'No file uploaded' });
+    }
+
+    console.log('File uploaded:', req.file);
+
+    const imagePath = req.file.path;
+    const filename = req.file.filename;
+    const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
+
+    const styles = [
+      'Van Gogh style',
+      'Cyberpunk portrait',
+      'Studio Ghibli character',
+      '80s comic book art',
+      'Fantasy oil painting',
+      'Pencil sketch',
+      'Watercolor painting',
+      'Pixar-style 3D character',
+      'Futuristic hologram',
+      'Pop art portrait',
+      'Charcoal drawing',
+      'Baroque oil painting',
+      'Modern minimalism',
+      'Neon-lit synthwave',
+      'Dark fantasy concept art',
+      'Line art illustration',
+      'Manga character',
+      'Surreal dreamscape',
+      'Ink and wash drawing',
+      'Comic strip style',
+      'Vaporwave aesthetic',
+      'Impressionist brush strokes',
+      'Post-apocalyptic wasteland',
+      'Mythical creature transformation',
+      'Photorealistic render',
+      'Low-poly 3D style',
+      'Art nouveau flourish',
+      'Renaissance portrait',
+      'Cubist interpretation',
+      'Steampunk gear-laden design',
+      'Afrofuturism vision',
+      'Vintage newspaper print',
+      'Graffiti street art',
+      'Cel-shaded anime',
+      'Ethereal fairy world',
+      'Dreamlike double exposure',
+      'Moody film noir'
+    ];
+
+    const selectedStyle = styles[Math.floor(Math.random() * styles.length)];
+    console.log(`Selected style for this generation: ${selectedStyle}`);
+
     const replicate = axios.create({
       baseURL: "https://api.replicate.com/v1",
       headers: {
@@ -161,20 +179,23 @@ app.post('/upload', upload.single('photo'), async (req, res) => {
       imageUrl: finalImage
     });
 
-  } catch (err) {
-    console.error("Error:", err);
-    res.status(500).json({
-      success: false,
-      error: err?.message || 'Image generation failed.'
-    });
-  }
+    try {
+      await fs.promises.unlink(imagePath);
+      console.log('Uploaded image deleted after processing');
+    } catch (err) {
+      console.error('Failed to delete uploaded image:', err);
+    }
 
-  try {
-    await fs.promises.unlink(imagePath);
-    console.log('Uploaded image deleted after processing');
   } catch (err) {
-    console.error('Failed to delete uploaded image:', err);
+    console.error('Upload handler error:', err);
+    next(err);
   }
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Global error handler:', err);
+  res.status(500).json({ success: false, error: err.message || 'Unknown error' });
 });
 
 app.listen(port, () => {
