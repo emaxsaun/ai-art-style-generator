@@ -304,6 +304,7 @@
       let stylesList = [];
       const styleSelect = document.getElementById('style-select');
       const customPromptInput = document.getElementById('custom-prompt');
+
       async function initializeStyles() {
         const res = await fetch('/styles');
         const styles = await res.json();
@@ -328,6 +329,7 @@
       }
 
       initializeStyles();
+
       const form = document.getElementById('upload-form');
       const resultImg = document.getElementById('result-img');
       const styleDisplay = document.getElementById('style-display');
@@ -350,6 +352,7 @@
       }
 
       updateDragDropVisibility();
+
       window.addEventListener('resize', updateDragDropVisibility);
       ['dragenter', 'dragover'].forEach(eventName => {
         dropArea.addEventListener(eventName, (e) => {
@@ -382,6 +385,7 @@
       const takePhotoBtn = document.getElementById('take-photo');
       const snapshotCanvas = document.getElementById('snapshot');
       const closeCameraBtn = document.getElementById('close-camera');
+
       let cameraStream;
       let useFrontCamera = true;
       let countdownInterval;
@@ -470,6 +474,7 @@
         clearInterval(countdownInterval);
         countdownOverlay.style.display = 'none';
       }
+      
       let retakeBtn;
 
       function createRetakeButton() {
@@ -630,7 +635,7 @@
         promptTextarea.style.height = 'auto';
         promptTextarea.style.height = promptTextarea.scrollHeight + 'px';
       });
-      
+
       window.addEventListener('load', () => {
         promptTextarea.style.height = 'auto';
         promptTextarea.style.height = promptTextarea.scrollHeight + 'px';
