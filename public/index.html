@@ -188,7 +188,7 @@
 
       @media (min-width: 768px) {
         #toggle-camera {
-          visibility: hidden;
+          display: none;
         }
       }
 
@@ -247,6 +247,10 @@
         outline: none;
       }
 
+      .mirror-preview {
+        transform: scaleX(-1);
+      }
+
       @keyframes spin {
         to {
           transform: rotate(360deg);
@@ -282,11 +286,9 @@
           <select id="style-select" name="style"></select>
         </div>
         <div style="margin-bottom: 16px;">
-          <label for="custom-prompt" style="color: white;">Custom prompt - Note - The word "img" must be part of the prompt:</label>
-          <input type="text" id="custom-prompt" name="prompt" style="width: 100%; padding: 8px; border-radius: 8px; border: none;" />
-          <br />
-          <br />
-          <button id="randomize-style" type="button" style="margin-left: 12px; background: #4caf50; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.6);"> 🔀 Randomize Style </button>
+          <label for="custom-prompt" style="color: white;"> Custom prompt - Note - The word "img" must be part of the prompt: </label>
+          <input type="text" id="custom-prompt" name="prompt" style="width: 100%; padding: 8px; border-radius: 8px; border: none; margin-bottom: 24px;" />
+          <button id="randomize-style" type="button" style="background: #4caf50; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.6);"> 🔀 Randomize Style </button>
         </div>
         <button type="submit">Generate AI Art</button>
       </form>
@@ -335,6 +337,15 @@
         filenameDisplay.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
       });
       const dropArea = document.getElementById('drop-area');
+      function updateDragDropVisibility() {
+        if (window.innerWidth < 768) {
+          dropArea.style.display = 'none';
+        } else {
+          dropArea.style.display = 'block';
+        }
+      }
+      updateDragDropVisibility();
+      window.addEventListener('resize', updateDragDropVisibility);
       ['dragenter', 'dragover'].forEach(eventName => {
         dropArea.addEventListener(eventName, (e) => {
           e.preventDefault();
@@ -377,12 +388,16 @@
             }
           });
           cameraStreamElem.srcObject = cameraStream;
+          if (useFrontCamera) {
+            cameraStreamElem.classList.add('mirror-preview');
+          } else {
+            cameraStreamElem.classList.remove('mirror-preview');
+          }
         } catch (err) {
           alert('Could not access camera: ' + err.message);
           cameraModal.classList.add('hidden');
         }
       }
-
       function stopCamera() {
         if (cameraStream) {
           cameraStream.getTracks().forEach(track => track.stop());
@@ -420,7 +435,16 @@
       countdownOverlay.style.top = 0;
       countdownOverlay.style.left = 0;
       countdownOverlay.style.right = 0;
-      countdownOverlay.style.bottom = '140px';
+
+      function updateCountdownOverlayPosition() {
+        if (window.innerWidth >= 768) {
+          countdownOverlay.style.bottom = '75px';
+        } else {
+          countdownOverlay.style.bottom = '140px';
+        }
+      }
+      updateCountdownOverlayPosition();
+      window.addEventListener('resize', updateCountdownOverlayPosition);
       countdownOverlay.style.display = 'flex';
       countdownOverlay.style.alignItems = 'center';
       countdownOverlay.style.justifyContent = 'center';
@@ -435,13 +459,11 @@
       countdownOverlay.style.display = 'none';
       cameraModal.style.position = 'relative';
       cameraModal.appendChild(countdownOverlay);
-
       function clearCountdown() {
         clearInterval(countdownInterval);
         countdownOverlay.style.display = 'none';
       }
       let retakeBtn;
-
       function createRetakeButton() {
         retakeBtn = document.createElement('button');
         retakeBtn.textContent = 'Retake';
@@ -481,7 +503,15 @@
             const scale = MAX_WIDTH / originalWidth;
             snapshotCanvas.width = MAX_WIDTH;
             snapshotCanvas.height = originalHeight * scale;
-            ctx.drawImage(cameraStreamElem, 0, 0, snapshotCanvas.width, snapshotCanvas.height);
+            if (useFrontCamera) {
+              ctx.save();
+              ctx.translate(snapshotCanvas.width, 0);
+              ctx.scale(-1, 1);
+              ctx.drawImage(cameraStreamElem, 0, 0, snapshotCanvas.width, snapshotCanvas.height);
+              ctx.restore();
+            } else {
+              ctx.drawImage(cameraStreamElem, 0, 0, snapshotCanvas.width, snapshotCanvas.height);
+            }
             snapshotCanvas.toBlob(blob => {
               const file = new File([blob], 'captured-photo.png', {
                 type: 'image/png'
