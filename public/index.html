@@ -284,8 +284,7 @@
         <div style="margin-bottom: 16px;">
           <label for="custom-prompt" style="color: white;">Custom prompt:</label>
           <input type="text" id="custom-prompt" name="prompt" style="width: 100%; padding: 8px; border-radius: 8px; border: none;" />
-          <br />
-          <br />
+          <br /><br />
           <button id="randomize-style" type="button" style="margin-left: 12px; background: #4caf50; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.6);"> 🔀 Randomize Style </button>
         </div>
         <button type="submit">Generate AI Art</button>
@@ -298,11 +297,13 @@
       <div id="error-message"></div>
     </div>
     <script>
+      let stylesList = [];
       const styleSelect = document.getElementById('style-select');
       const customPromptInput = document.getElementById('custom-prompt');
       async function initializeStyles() {
         const res = await fetch('/styles');
         const styles = await res.json();
+        stylesList = styles;
         const randomStyle = styles[Math.floor(Math.random() * styles.length)];
         const randomPrompt = randomStyle.prompt;
         styles.forEach(style => {
@@ -546,6 +547,15 @@
             styleDisplay.textContent = `Style applied: ${data.message.replace('Image processed in ', '')}`;
             resultImg.src = data.imageUrl;
             resultImg.style.display = 'block';
+            const chosenStyleName = data.message.replace('Image processed in ', '');
+            const defaultPromptForStyleObj = stylesList.find(s => s.name === chosenStyleName);
+            const defaultPromptForStyle = defaultPromptForStyleObj ? defaultPromptForStyleObj.prompt : '';
+            const userPrompt = customPromptInput.value.trim();
+            if (userPrompt && userPrompt !== defaultPromptForStyle) {
+              styleDisplay.textContent = `Custom prompt applied`;
+            } else {
+              styleDisplay.textContent = `Style applied: ${chosenStyleName}`;
+            }
           } else {
             console.error('Invalid imageUrl:', data.imageUrl);
             errorMessage.textContent = 'Received invalid image URL.';
