@@ -1,4 +1,4 @@
-# AI Art Style Generator
+# AI Photobooth
 
 A simple web app that lets users upload a photo and generates AI-powered art in various styles using Photomake on the Replicate API.
 
