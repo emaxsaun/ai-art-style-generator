@@ -2,7 +2,7 @@
 
 A simple web app that lets users upload a photo and generates AI-powered art in various styles using the Photomake model on the Replicate API.
 
-Demo - https://ai-art-style-generator-production.up.railway.app/
+Demo App - https://ai-art-style-generator-production.up.railway.app/
 
 ---
 
