@@ -284,7 +284,8 @@
         <div style="margin-bottom: 16px;">
           <label for="custom-prompt" style="color: white;">Custom prompt:</label>
           <input type="text" id="custom-prompt" name="prompt" style="width: 100%; padding: 8px; border-radius: 8px; border: none;" />
-          <br /><br />
+          <br />
+          <br />
           <button id="randomize-style" type="button" style="margin-left: 12px; background: #4caf50; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.6);"> 🔀 Randomize Style </button>
         </div>
         <button type="submit">Generate AI Art</button>
@@ -573,7 +574,11 @@
       });
       const randomizeBtn = document.getElementById('randomize-style');
       randomizeBtn.addEventListener('click', () => {
-        window.location.reload();
+        if (!stylesList || stylesList.length === 0) return;
+        const randomStyle = stylesList[Math.floor(Math.random() * stylesList.length)];
+        styleSelect.value = randomStyle.name;
+        customPromptInput.value = randomStyle.prompt;
+        styleDisplay.textContent = '';
       });
     </script>
   </body>
