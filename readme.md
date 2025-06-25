@@ -9,7 +9,7 @@ Demo - https://ai-art-style-generator-production.up.railway.app/
 ## Features
 
 - Upload your own photo/Camera upload
-- Randomly applies one of many creative art styles
+- Randomly applies one of many creative art styles or choose your own styles/prompt
 - Generates AI art based on your input image
 - Displays generated image
 - Responsive and styled frontend with a clean UI
@@ -47,4 +47,4 @@ cd ai-art-style-generator
 
 Note - Make sure to add a `.env` file with `REPLICATE_API_TOKEN=<YOUR_ACTUAL_API_TOKEN>`
 
-Have fun!!
+Pleaste note, if using a custom prompt, the word "img" has to be a part of it! Have fun!!
