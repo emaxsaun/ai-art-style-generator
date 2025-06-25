@@ -326,6 +326,7 @@
           }
         });
       }
+
       initializeStyles();
       const form = document.getElementById('upload-form');
       const resultImg = document.getElementById('result-img');
@@ -337,7 +338,9 @@
       fileInput.addEventListener('change', () => {
         filenameDisplay.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
       });
+
       const dropArea = document.getElementById('drop-area');
+
       function updateDragDropVisibility() {
         if (window.innerWidth < 768) {
           dropArea.style.display = 'none';
@@ -345,6 +348,7 @@
           dropArea.style.display = 'block';
         }
       }
+
       updateDragDropVisibility();
       window.addEventListener('resize', updateDragDropVisibility);
       ['dragenter', 'dragover'].forEach(eventName => {
@@ -354,6 +358,7 @@
           dropArea.classList.add('dragover');
         });
       });
+
       ['dragleave', 'drop'].forEach(eventName => {
         dropArea.addEventListener(eventName, (e) => {
           e.preventDefault();
@@ -361,6 +366,7 @@
           dropArea.classList.remove('dragover');
         });
       });
+
       dropArea.addEventListener('drop', (e) => {
         const files = e.dataTransfer.files;
         if (files.length > 0 && files[0].type.startsWith('image/')) {
@@ -368,6 +374,7 @@
           filenameDisplay.textContent = files[0].name;
         }
       });
+
       const openCameraBtn = document.getElementById('open-camera');
       const toggleCameraBtn = document.getElementById('toggle-camera');
       const cameraModal = document.getElementById('camera-modal');
@@ -380,6 +387,7 @@
       let countdownInterval;
       let countdownNumber;
       const ctx = snapshotCanvas.getContext('2d');
+
       async function startCamera() {
         const facingMode = useFrontCamera ? 'user' : 'environment';
         try {
@@ -399,26 +407,31 @@
           cameraModal.classList.add('hidden');
         }
       }
+
       function stopCamera() {
         if (cameraStream) {
           cameraStream.getTracks().forEach(track => track.stop());
           cameraStream = null;
         }
       }
+
       openCameraBtn.addEventListener('click', async () => {
         cameraModal.classList.remove('hidden');
         snapshotCanvas.classList.add('hidden');
         cameraStreamElem.style.display = 'block';
         takePhotoBtn.style.display = 'inline-block';
+        toggleCameraBtn.style.display = 'inline-block';
         countdownOverlay.style.display = 'none';
         if (retakeBtn) retakeBtn.remove();
         await startCamera();
       });
+
       toggleCameraBtn.addEventListener('click', async () => {
         useFrontCamera = !useFrontCamera;
         stopCamera();
         await startCamera();
       });
+
       closeCameraBtn.addEventListener('click', () => {
         stopCamera();
         cameraModal.classList.add('hidden');
@@ -431,6 +444,7 @@
         fileInput.value = '';
         filenameDisplay.textContent = 'No file chosen';
       });
+
       const countdownOverlay = document.createElement('div');
       countdownOverlay.style.position = 'absolute';
       countdownOverlay.style.top = 0;
@@ -444,6 +458,7 @@
           countdownOverlay.style.bottom = '140px';
         }
       }
+
       updateCountdownOverlayPosition();
       window.addEventListener('resize', updateCountdownOverlayPosition);
       countdownOverlay.style.display = 'flex';
@@ -460,11 +475,13 @@
       countdownOverlay.style.display = 'none';
       cameraModal.style.position = 'relative';
       cameraModal.appendChild(countdownOverlay);
+
       function clearCountdown() {
         clearInterval(countdownInterval);
         countdownOverlay.style.display = 'none';
       }
       let retakeBtn;
+
       function createRetakeButton() {
         retakeBtn = document.createElement('button');
         retakeBtn.textContent = 'Retake';
@@ -482,17 +499,20 @@
           snapshotCanvas.classList.add('hidden');
           retakeBtn.remove();
           takePhotoBtn.style.display = 'inline-block';
+          toggleCameraBtn.style.display = 'inline-block';
           countdownOverlay.style.display = 'none';
           cameraStreamElem.style.display = 'block';
           fileInput.value = '';
           filenameDisplay.textContent = 'No file chosen';
         });
       }
+
       takePhotoBtn.addEventListener('click', () => {
         countdownNumber = 3;
         countdownOverlay.textContent = countdownNumber;
         countdownOverlay.style.display = 'flex';
         takePhotoBtn.style.display = 'none';
+        toggleCameraBtn.style.display = 'none';
         cameraStreamElem.style.display = 'block';
         countdownInterval = setInterval(() => {
           countdownNumber--;
@@ -532,6 +552,7 @@
           }
         }, 1000);
       });
+
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         if (!fileInput.files || fileInput.files.length === 0) {
@@ -603,7 +624,9 @@
           console.error(err);
         }
       });
+
       const randomizeBtn = document.getElementById('randomize-style');
+
       randomizeBtn.addEventListener('click', () => {
         if (!stylesList || stylesList.length === 0) return;
         const randomStyle = stylesList[Math.floor(Math.random() * stylesList.length)];
@@ -611,11 +634,13 @@
         customPromptInput.value = randomStyle.prompt;
         styleDisplay.textContent = '';
       });
+
       const promptTextarea = document.getElementById('custom-prompt');
       promptTextarea.addEventListener('input', () => {
         promptTextarea.style.height = 'auto';
         promptTextarea.style.height = promptTextarea.scrollHeight + 'px';
       });
+      
       window.addEventListener('load', () => {
         promptTextarea.style.height = 'auto';
         promptTextarea.style.height = promptTextarea.scrollHeight + 'px';
