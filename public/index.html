@@ -6,7 +6,6 @@
     <title>AI Photobooth</title>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
       html,
       body {
         margin: 0;
@@ -304,7 +303,6 @@
       let stylesList = [];
       const styleSelect = document.getElementById('style-select');
       const customPromptInput = document.getElementById('custom-prompt');
-
       async function initializeStyles() {
         const res = await fetch('/styles');
         const styles = await res.json();
@@ -327,9 +325,7 @@
           }
         });
       }
-
       initializeStyles();
-
       const form = document.getElementById('upload-form');
       const resultImg = document.getElementById('result-img');
       const styleDisplay = document.getElementById('style-display');
@@ -340,7 +336,6 @@
       fileInput.addEventListener('change', () => {
         filenameDisplay.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
       });
-
       const dropArea = document.getElementById('drop-area');
 
       function updateDragDropVisibility() {
@@ -350,9 +345,7 @@
           dropArea.style.display = 'block';
         }
       }
-
       updateDragDropVisibility();
-
       window.addEventListener('resize', updateDragDropVisibility);
       ['dragenter', 'dragover'].forEach(eventName => {
         dropArea.addEventListener(eventName, (e) => {
@@ -361,7 +354,6 @@
           dropArea.classList.add('dragover');
         });
       });
-
       ['dragleave', 'drop'].forEach(eventName => {
         dropArea.addEventListener(eventName, (e) => {
           e.preventDefault();
@@ -369,7 +361,6 @@
           dropArea.classList.remove('dragover');
         });
       });
-
       dropArea.addEventListener('drop', (e) => {
         const files = e.dataTransfer.files;
         if (files.length > 0 && files[0].type.startsWith('image/')) {
@@ -377,7 +368,6 @@
           filenameDisplay.textContent = files[0].name;
         }
       });
-
       const openCameraBtn = document.getElementById('open-camera');
       const toggleCameraBtn = document.getElementById('toggle-camera');
       const cameraModal = document.getElementById('camera-modal');
@@ -385,13 +375,11 @@
       const takePhotoBtn = document.getElementById('take-photo');
       const snapshotCanvas = document.getElementById('snapshot');
       const closeCameraBtn = document.getElementById('close-camera');
-
       let cameraStream;
       let useFrontCamera = true;
       let countdownInterval;
       let countdownNumber;
       const ctx = snapshotCanvas.getContext('2d');
-
       async function startCamera() {
         const facingMode = useFrontCamera ? 'user' : 'environment';
         try {
@@ -418,24 +406,25 @@
           cameraStream = null;
         }
       }
-
       openCameraBtn.addEventListener('click', async () => {
         cameraModal.classList.remove('hidden');
         snapshotCanvas.classList.add('hidden');
         cameraStreamElem.style.display = 'block';
         takePhotoBtn.style.display = 'inline-block';
-        toggleCameraBtn.style.display = 'inline-block';
+        if (window.innerWidth < 768) {
+          toggleCameraBtn.style.display = 'inline-block';
+        } else {
+          toggleCameraBtn.style.display = 'none';
+        }
         countdownOverlay.style.display = 'none';
         if (retakeBtn) retakeBtn.remove();
         await startCamera();
       });
-
       toggleCameraBtn.addEventListener('click', async () => {
         useFrontCamera = !useFrontCamera;
         stopCamera();
         await startCamera();
       });
-
       closeCameraBtn.addEventListener('click', () => {
         stopCamera();
         cameraModal.classList.add('hidden');
@@ -448,7 +437,6 @@
         fileInput.value = '';
         filenameDisplay.textContent = 'No file chosen';
       });
-
       const countdownOverlay = document.createElement('div');
       countdownOverlay.style.position = 'absolute';
       countdownOverlay.style.top = 0;
@@ -474,7 +462,6 @@
         clearInterval(countdownInterval);
         countdownOverlay.style.display = 'none';
       }
-      
       let retakeBtn;
 
       function createRetakeButton() {
@@ -494,14 +481,17 @@
           snapshotCanvas.classList.add('hidden');
           retakeBtn.remove();
           takePhotoBtn.style.display = 'inline-block';
-          toggleCameraBtn.style.display = 'inline-block';
+          if (window.innerWidth < 768) {
+            toggleCameraBtn.style.display = 'inline-block';
+          } else {
+            toggleCameraBtn.style.display = 'none';
+          }
           countdownOverlay.style.display = 'none';
           cameraStreamElem.style.display = 'block';
           fileInput.value = '';
           filenameDisplay.textContent = 'No file chosen';
         });
       }
-
       takePhotoBtn.addEventListener('click', () => {
         countdownNumber = 3;
         countdownOverlay.textContent = countdownNumber;
@@ -547,7 +537,6 @@
           }
         }, 1000);
       });
-
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         if (!fileInput.files || fileInput.files.length === 0) {
@@ -619,9 +608,7 @@
           console.error(err);
         }
       });
-
       const randomizeBtn = document.getElementById('randomize-style');
-
       randomizeBtn.addEventListener('click', () => {
         if (!stylesList || stylesList.length === 0) return;
         const randomStyle = stylesList[Math.floor(Math.random() * stylesList.length)];
@@ -629,13 +616,11 @@
         customPromptInput.value = randomStyle.prompt;
         styleDisplay.textContent = '';
       });
-
       const promptTextarea = document.getElementById('custom-prompt');
       promptTextarea.addEventListener('input', () => {
         promptTextarea.style.height = 'auto';
         promptTextarea.style.height = promptTextarea.scrollHeight + 'px';
       });
-
       window.addEventListener('load', () => {
         promptTextarea.style.height = 'auto';
         promptTextarea.style.height = promptTextarea.scrollHeight + 'px';
