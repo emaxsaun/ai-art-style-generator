@@ -12,9 +12,68 @@ if (!process.env.REPLICATE_API_TOKEN) {
 }
 
 const app = express();
+
+const styles = [
+	'Van Gogh style',
+	'Cyberpunk portrait',
+	'Studio Ghibli character',
+	'80s comic book art',
+	'Fantasy oil painting',
+	'Pencil sketch',
+	'Watercolor painting',
+	'Pixar-style 3D character',
+	'Futuristic hologram',
+	'Pop art portrait',
+	'Charcoal drawing',
+	'Baroque oil painting',
+	'Modern minimalism',
+	'Neon-lit synthwave',
+	'Dark fantasy concept art',
+	'Line art illustration',
+	'Manga character',
+	'Surreal dreamscape',
+	'Ink and wash drawing',
+	'Comic strip style',
+	'Vaporwave aesthetic',
+	'Impressionist brush strokes',
+	'Post-apocalyptic wasteland',
+	'Mythical creature transformation',
+	'Photorealistic render',
+	'Low-poly 3D style',
+	'Art nouveau flourish',
+	'Renaissance portrait',
+	'Cubist interpretation',
+    'Retro',
+    'Realistic',
+    'Stunning',
+	'Steampunk gear-laden design',
+	'Afrofuturism vision',
+	'Vintage newspaper print',
+	'Graffiti street art',
+	'Cel-shaded anime',
+	'Ethereal fairy world',
+	'Dreamlike double exposure',
+	'Moody film noir',
+	'Cinematic',
+	'Disney Charactor',
+	'Digital Art',
+	'Photographic (Default)',
+	'Fantasy art',
+	'Neonpunk',
+	'Enhance',
+	'Comic book',
+	'Lowpoly',
+	'Line art'
+];
+
 const port = process.env.PORT || 3000;
 
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({
+	extended: true
+}));
+
 app.use(express.static('public'));
 
 const uploadsDir = path.join(__dirname, 'uploads');
@@ -54,6 +113,14 @@ app.get('/', (req, res) => {
 	res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
+app.get('/styles', (req, res) => {
+	const stylesWithPrompts = styles.map(name => ({
+		name,
+		prompt: `A portrait img in the style of ${name}`
+	}));
+	res.json(stylesWithPrompts);
+});
+
 app.post('/upload', upload.single('photo'), async (req, res, next) => {
 	try {
 		if (!req.file) {
@@ -70,58 +137,14 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 		const filename = req.file.filename;
 		const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
 
-		const styles = [
-			'Van Gogh style',
-			'Cyberpunk portrait',
-			'Studio Ghibli character',
-			'80s comic book art',
-			'Fantasy oil painting',
-			'Pencil sketch',
-			'Watercolor painting',
-			'Pixar-style 3D character',
-			'Futuristic hologram',
-			'Pop art portrait',
-			'Charcoal drawing',
-			'Baroque oil painting',
-			'Modern minimalism',
-			'Neon-lit synthwave',
-			'Dark fantasy concept art',
-			'Line art illustration',
-			'Manga character',
-			'Surreal dreamscape',
-			'Ink and wash drawing',
-			'Comic strip style',
-			'Vaporwave aesthetic',
-			'Impressionist brush strokes',
-			'Post-apocalyptic wasteland',
-			'Mythical creature transformation',
-			'Photorealistic render',
-			'Low-poly 3D style',
-			'Art nouveau flourish',
-			'Renaissance portrait',
-			'Cubist interpretation',
-			'Steampunk gear-laden design',
-			'Afrofuturism vision',
-			'Vintage newspaper print',
-			'Graffiti street art',
-			'Cel-shaded anime',
-			'Ethereal fairy world',
-			'Dreamlike double exposure',
-			'Moody film noir',
-            'Cinematic',
-            'Disney Charactor',
-            'Digital Art',
-            'Photographic (Default)',
-            'Fantasy art',
-            'Neonpunk',
-            'Enhance',
-            'Comic book',
-            'Lowpoly',
-            'Line art'
-		];
-
-		const selectedStyle = styles[Math.floor(Math.random() * styles.length)];
-		console.log(`Selected style for this generation: ${selectedStyle}`);
+		const {
+			selectedStyle,
+			customPrompt
+		} = req.body;
+		const fallbackStyle = styles[Math.floor(Math.random() * styles.length)];
+		const chosenStyle = styles.includes(selectedStyle) ? selectedStyle : fallbackStyle;
+		const prompt = (customPrompt && customPrompt.trim()) ? customPrompt.trim() : `A portrait img in the style of ${chosenStyle}`;
+		console.log(`Prompt to send: "${prompt}"`);
 
 		const replicate = axios.create({
 			baseURL: "https://api.replicate.com/v1",
@@ -135,30 +158,30 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 
 		console.log('Sending Replicate request with input:', {
 			input_image: imageUrl,
-            prompt: `A portrait img in the style of ${selectedStyle}`,
-            negative_prompt: 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry',
-            style_name: '(No style)',
-            num_steps: 50,
-            style_strength_ratio: 20,
-            num_outputs: 1,
-            guidance_scale: 5,
-            width: 512,
-            height: 512
+			prompt,
+			negative_prompt: 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry',
+			style_name: '(No style)',
+			num_steps: 50,
+			style_strength_ratio: 20,
+			num_outputs: 1,
+			guidance_scale: 5,
+			width: 512,
+			height: 512
 		});
 
 		const start = await replicate.post('/predictions', {
 			version,
 			input: {
 				input_image: imageUrl,
-                prompt: `A portrait img in the style of ${selectedStyle}`,
-                negative_prompt: 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry',
-                style_name: '(No style)',
-                num_steps: 50,
-                style_strength_ratio: 20,
-                num_outputs: 1,
-                guidance_scale: 5,
-                width: 512,
-                height: 512
+				prompt,
+				negative_prompt: 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry',
+				style_name: '(No style)',
+				num_steps: 50,
+				style_strength_ratio: 20,
+				num_outputs: 1,
+				guidance_scale: 5,
+				width: 512,
+				height: 512
 			}
 		});
 
@@ -207,7 +230,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 
 		res.json({
 			success: true,
-			message: `Image processed in ${selectedStyle}`,
+			message: `Image processed in ${chosenStyle}`,
 			imageUrl: finalImage
 		});
 

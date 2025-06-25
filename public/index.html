@@ -198,6 +198,55 @@
         margin-bottom: 10px;
       }
 
+      label {
+        font-weight: 600;
+        color: white;
+        display: block;
+        margin-bottom: 8px;
+        font-size: 1.1rem;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      }
+
+      #style-select {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: none;
+        font-size: 1.1rem;
+        font-weight: 600;
+        background-color: rgba(255 255 255 / 0.9);
+        color: #333;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+      }
+
+      #style-select:hover,
+      #style-select:focus {
+        background-color: #fff;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        outline: none;
+      }
+
+      #custom-prompt {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: none;
+        font-size: 1.1rem;
+        font-weight: 600;
+        background-color: rgba(255 255 255 / 0.9);
+        color: #333;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      #custom-prompt:focus {
+        background-color: #fff;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        outline: none;
+      }
+
       @keyframes spin {
         to {
           transform: rotate(360deg);
@@ -207,7 +256,8 @@
   </head>
   <body>
     <div id="box">
-      <h1>Upload Your Photo</h1>
+      <h1>AI Art Generator</h1>
+      <h2>Upload Your Photo</h2>
       <form id="upload-form" enctype="multipart/form-data">
         <div class="file-upload-wrapper">
           <label for="photo" class="custom-file-label">Choose File</label>
@@ -227,8 +277,17 @@
         <div id="drop-area">
           <p>Or drag and drop an image here</p>
         </div>
-        <br />
-        <br />
+        <div style="margin-bottom: 16px;">
+          <label for="style-select" style="color: white;">Choose a style:</label>
+          <select id="style-select" name="style"></select>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label for="custom-prompt" style="color: white;">Custom prompt:</label>
+          <input type="text" id="custom-prompt" name="prompt" style="width: 100%; padding: 8px; border-radius: 8px; border: none;" />
+          <br />
+          <br />
+          <button id="randomize-style" type="button" style="margin-left: 12px; background: #4caf50; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.6);"> 🔀 Randomize Style </button>
+        </div>
         <button type="submit">Generate AI Art</button>
       </form>
       <div id="style-display"></div>
@@ -239,6 +298,23 @@
       <div id="error-message"></div>
     </div>
     <script>
+      const styleSelect = document.getElementById('style-select');
+      const customPromptInput = document.getElementById('custom-prompt');
+      async function initializeStyles() {
+        const res = await fetch('/styles');
+        const styles = await res.json();
+        const randomStyle = styles[Math.floor(Math.random() * styles.length)];
+        const randomPrompt = randomStyle.prompt;
+        styles.forEach(style => {
+          const option = document.createElement('option');
+          option.value = style.name;
+          option.textContent = style.name;
+          styleSelect.appendChild(option);
+        });
+        styleSelect.value = randomStyle.name;
+        customPromptInput.value = randomPrompt;
+      }
+      initializeStyles();
       const form = document.getElementById('upload-form');
       const resultImg = document.getElementById('result-img');
       const styleDisplay = document.getElementById('style-display');
@@ -334,7 +410,7 @@
       countdownOverlay.style.top = 0;
       countdownOverlay.style.left = 0;
       countdownOverlay.style.right = 0;
-      countdownOverlay.style.bottom = '143px';
+      countdownOverlay.style.bottom = '140px';
       countdownOverlay.style.display = 'flex';
       countdownOverlay.style.alignItems = 'center';
       countdownOverlay.style.justifyContent = 'center';
@@ -434,14 +510,16 @@
         const estimatedTime = 10000;
         const startTime = Date.now();
         const progressInterval = setInterval(() => {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(100, Math.floor((elapsed / estimatedTime) * 100));
-        progressBar.value = progress;
-        progressText.textContent = `${progress}%`;
-        if (progress >= 100) clearInterval(progressInterval);
+          const elapsed = Date.now() - startTime;
+          const progress = Math.min(100, Math.floor((elapsed / estimatedTime) * 100));
+          progressBar.value = progress;
+          progressText.textContent = `${progress}%`;
+          if (progress >= 100) clearInterval(progressInterval);
         }, 200);
         const formData = new FormData();
         formData.append('photo', fileInput.files[0]);
+        formData.append('selectedStyle', styleSelect.value);
+        formData.append('customPrompt', customPromptInput.value);
         try {
           const response = await fetch('/upload', {
             method: 'POST',
@@ -472,6 +550,10 @@
           errorMessage.style.display = 'block';
           console.error(err);
         }
+      });
+      const randomizeBtn = document.getElementById('randomize-style');
+      randomizeBtn.addEventListener('click', () => {
+        window.location.reload();
       });
     </script>
   </body>
