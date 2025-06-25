@@ -8,7 +8,7 @@ Demo - https://ai-art-style-generator-production.up.railway.app/
 
 ## Features
 
-- Upload your own photo/Camera upload
+- Upload your own photo / Camera upload
 - Randomly applies one of many creative art styles or choose your own styles/prompt
 - Generates AI art based on your input image
 - Displays generated image
