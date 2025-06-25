@@ -411,6 +411,19 @@
         }
       }
 
+      function updateToggleCameraVisibility() {
+        const isMobile = window.innerWidth < 768;
+        const cameraIsOpen = !cameraModal.classList.contains('hidden');
+
+        if (cameraIsOpen) {
+            toggleCameraBtn.style.display = isMobile ? 'inline-block' : 'none';
+        }
+      }
+      
+      updateToggleCameraVisibility();
+      
+      window.addEventListener('resize', updateToggleCameraVisibility);
+
       function stopCamera() {
         if (cameraStream) {
           cameraStream.getTracks().forEach(track => track.stop());
@@ -431,6 +444,7 @@
         countdownOverlay.style.display = 'none';
         if (retakeBtn) retakeBtn.remove();
         await startCamera();
+        updateToggleCameraVisibility();
       });
 
       toggleCameraBtn.addEventListener('click', async () => {
@@ -450,6 +464,7 @@
         if (retakeBtn) retakeBtn.remove();
         fileInput.value = '';
         filenameDisplay.textContent = 'No file chosen';
+        updateToggleCameraVisibility();
       });
 
       const countdownOverlay = document.createElement('div');
