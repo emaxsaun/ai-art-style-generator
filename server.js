@@ -106,7 +106,17 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			'Cel-shaded anime',
 			'Ethereal fairy world',
 			'Dreamlike double exposure',
-			'Moody film noir'
+			'Moody film noir',
+            'Cinematic',
+            'Disney Charactor',
+            'Digital Art',
+            'Photographic (Default)',
+            'Fantasy art',
+            'Neonpunk',
+            'Enhance',
+            'Comic book',
+            'Lowpoly',
+            'Line art'
 		];
 
 		const selectedStyle = styles[Math.floor(Math.random() * styles.length)];
@@ -120,28 +130,23 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			},
 		});
 
-		const version = "15a3689ee13b0d2616e98820eca31d4c3abcd36672df6afce5cb6feb1d66087d";
+		const version = "ddfc2b08d209f9fa8c1eca692712918bd449f695dabb4a958da31802a9570fe4";
 
 		console.log('Sending Replicate request with input:', {
-			image: imageUrl,
-			prompt: `a portrait photo in ${selectedStyle}`,
-            num_outputs: 1,
-			num_inference_steps: 20,
-			guidance_scale: 7.5,
-            prompt_strength: 0.8,
-			width: 512,
-			height: 512
+			
 		});
 
 		const start = await replicate.post('/predictions', {
 			version,
 			input: {
-				image: imageUrl,
-                prompt: `a portrait photo in ${selectedStyle}`,
+				input_image: imageUrl,
+                prompt: `A portrait img in the style of ${selectedStyle}`,
+                negative_prompt: 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry',
+                style_name: '(No style)',
+                num_steps: 50,
+                style_strength_ratio: 20,
                 num_outputs: 1,
-                num_inference_steps: 20,
-                guidance_scale: 7.5,
-                prompt_strength: 0.8,
+                guidance_scale: 5,
                 width: 512,
                 height: 512
 			}
