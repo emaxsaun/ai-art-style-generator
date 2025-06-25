@@ -55,7 +55,7 @@ const styles = [
 	'Dreamlike double exposure',
 	'Moody film noir',
 	'Cinematic',
-	'Disney Charactor',
+	'Disney Character',
 	'Digital Art',
 	'Photographic (Default)',
 	'Fantasy art',
