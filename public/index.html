@@ -234,6 +234,7 @@
       <div id="style-display"></div>
       <img id="result-img" alt="Generated AI Art" />
       <div id="loading-spinner"></div>
+      <div id="progress-text" style="color: white; font-weight: bold;"></div>
       <div id="error-message"></div>
     </div>
     <script>
@@ -423,6 +424,21 @@
         styleDisplay.textContent = '';
         resultImg.style.display = 'none';
         loadingSpinner.style.display = 'inline-block';
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        progressBar.style.display = 'block';
+        progressText.style.display = 'block';
+        progressBar.value = 0;
+        progressText.textContent = '0%';
+        const estimatedTime = 10000;
+        const startTime = Date.now();
+        const progressInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(100, Math.floor((elapsed / estimatedTime) * 100));
+        progressBar.value = progress;
+        progressText.textContent = `${progress}%`;
+        if (progress >= 100) clearInterval(progressInterval);
+        }, 200);
         const formData = new FormData();
         formData.append('photo', fileInput.files[0]);
         try {
@@ -432,6 +448,9 @@
           });
           const data = await response.json();
           loadingSpinner.style.display = 'none';
+          clearInterval(progressInterval);
+          progressBar.style.display = 'none';
+          progressText.style.display = 'none';
           console.log('Response data:', data);
           if (typeof data.imageUrl === 'string' && data.imageUrl.trim().length > 0) {
             console.log('Setting image src to:', data.imageUrl);
@@ -445,6 +464,9 @@
           }
         } catch (err) {
           loadingSpinner.style.display = 'none';
+          clearInterval(progressInterval);
+          progressBar.style.display = 'none';
+          progressText.style.display = 'none';
           errorMessage.textContent = 'An error occurred. Please try again.';
           errorMessage.style.display = 'block';
           console.error(err);

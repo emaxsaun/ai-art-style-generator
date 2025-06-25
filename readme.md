@@ -1,6 +1,6 @@
 # AI Art Style Generator
 
-A simple web app that lets users upload a photo and generates AI-powered art in various styles using Stable Diffusion on the Replicate API.
+A simple web app that lets users upload a photo and generates AI-powered art in various styles using Photomake on the Replicate API.
 
 Demo - https://ai-art-style-generator-production.up.railway.app/
 
@@ -8,7 +8,7 @@ Demo - https://ai-art-style-generator-production.up.railway.app/
 
 ## Features
 
-- Upload your own photo
+- Upload your own photo/Camera upload
 - Randomly applies one of many creative art styles
 - Generates AI art based on your input image
 - Displays generated image

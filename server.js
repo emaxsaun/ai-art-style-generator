@@ -35,6 +35,7 @@ const storage = multer.diskStorage({
 		cb(null, `${base}-${Date.now()}${ext}`);
 	}
 });
+
 const upload = multer({
 	storage,
 	limits: {
@@ -133,7 +134,16 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 		const version = "ddfc2b08d209f9fa8c1eca692712918bd449f695dabb4a958da31802a9570fe4";
 
 		console.log('Sending Replicate request with input:', {
-			
+			input_image: imageUrl,
+            prompt: `A portrait img in the style of ${selectedStyle}`,
+            negative_prompt: 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry',
+            style_name: '(No style)',
+            num_steps: 50,
+            style_strength_ratio: 20,
+            num_outputs: 1,
+            guidance_scale: 5,
+            width: 512,
+            height: 512
 		});
 
 		const start = await replicate.post('/predictions', {
