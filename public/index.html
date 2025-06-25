@@ -335,7 +335,6 @@
       const loadingSpinner = document.getElementById('loading-spinner');
       const fileInput = document.getElementById('photo');
       const filenameDisplay = document.getElementById('filename-display');
-      
       fileInput.addEventListener('change', () => {
         filenameDisplay.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
       });
@@ -452,9 +451,6 @@
       countdownOverlay.style.left = 0;
       countdownOverlay.style.right = 0;
       countdownOverlay.style.bottom = '75px';
-
-      updateCountdownOverlayPosition();
-      window.addEventListener('resize', updateCountdownOverlayPosition);
       countdownOverlay.style.display = 'flex';
       countdownOverlay.style.alignItems = 'center';
       countdownOverlay.style.justifyContent = 'center';
@@ -489,7 +485,6 @@
         retakeBtn.style.cursor = 'pointer';
         const cameraButtons = document.getElementById('camera-buttons');
         cameraButtons.insertBefore(retakeBtn, closeCameraBtn);
-
         retakeBtn.addEventListener('click', () => {
           snapshotCanvas.classList.add('hidden');
           retakeBtn.remove();
