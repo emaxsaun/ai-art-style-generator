@@ -313,6 +313,13 @@
         });
         styleSelect.value = randomStyle.name;
         customPromptInput.value = randomPrompt;
+        styleSelect.addEventListener('change', () => {
+          const selectedName = styleSelect.value;
+          const selectedStyle = styles.find(s => s.name === selectedName);
+          if (selectedStyle) {
+            customPromptInput.value = selectedStyle.prompt;
+          }
+        });
       }
       initializeStyles();
       const form = document.getElementById('upload-form');
@@ -373,6 +380,7 @@
           cameraModal.classList.add('hidden');
         }
       }
+
       function stopCamera() {
         if (cameraStream) {
           cameraStream.getTracks().forEach(track => track.stop());
@@ -425,11 +433,13 @@
       countdownOverlay.style.display = 'none';
       cameraModal.style.position = 'relative';
       cameraModal.appendChild(countdownOverlay);
+
       function clearCountdown() {
         clearInterval(countdownInterval);
         countdownOverlay.style.display = 'none';
       }
       let retakeBtn;
+
       function createRetakeButton() {
         retakeBtn = document.createElement('button');
         retakeBtn.textContent = 'Retake';
