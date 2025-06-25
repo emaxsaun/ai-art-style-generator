@@ -335,6 +335,7 @@
       const loadingSpinner = document.getElementById('loading-spinner');
       const fileInput = document.getElementById('photo');
       const filenameDisplay = document.getElementById('filename-display');
+      
       fileInput.addEventListener('change', () => {
         filenameDisplay.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
       });
@@ -450,14 +451,7 @@
       countdownOverlay.style.top = 0;
       countdownOverlay.style.left = 0;
       countdownOverlay.style.right = 0;
-
-      function updateCountdownOverlayPosition() {
-        if (window.innerWidth >= 768) {
-          countdownOverlay.style.bottom = '75px';
-        } else {
-          countdownOverlay.style.bottom = '140px';
-        }
-      }
+      countdownOverlay.style.bottom = '75px';
 
       updateCountdownOverlayPosition();
       window.addEventListener('resize', updateCountdownOverlayPosition);
@@ -495,6 +489,7 @@
         retakeBtn.style.cursor = 'pointer';
         const cameraButtons = document.getElementById('camera-buttons');
         cameraButtons.insertBefore(retakeBtn, closeCameraBtn);
+
         retakeBtn.addEventListener('click', () => {
           snapshotCanvas.classList.add('hidden');
           retakeBtn.remove();
