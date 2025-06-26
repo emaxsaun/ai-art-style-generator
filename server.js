@@ -116,7 +116,7 @@ app.get('/', (req, res) => {
 app.get('/styles', (req, res) => {
 	const stylesWithPrompts = styles.map(name => ({
 		name,
-		prompt: `A portrait img in the style of ${name}`
+		prompt: `A highly detailed, realistic portrait img capturing the true likeness of the person, in the style of ${name}`
 	}));
 	res.json(stylesWithPrompts);
 });
