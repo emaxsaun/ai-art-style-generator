@@ -164,7 +164,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			num_steps: 50,
 			style_strength_ratio: 20,
 			num_outputs: 1,
-			guidance_scale: 5,
+			guidance_scale: 10,
 			width: 512,
 			height: 512
 		});
@@ -179,7 +179,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 				num_steps: 50,
 				style_strength_ratio: 20,
 				num_outputs: 1,
-				guidance_scale: 5,
+				guidance_scale: 10,
 				width: 512,
 				height: 512
 			}
