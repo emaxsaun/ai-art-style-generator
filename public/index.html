@@ -304,7 +304,6 @@
       let stylesList = [];
       const styleSelect = document.getElementById('style-select');
       const customPromptInput = document.getElementById('custom-prompt');
-
       async function initializeStyles() {
         const res = await fetch('/styles');
         const styles = await res.json();
@@ -327,7 +326,6 @@
           }
         });
       }
-
       initializeStyles();
       const form = document.getElementById('upload-form');
       const resultImg = document.getElementById('result-img');
@@ -336,11 +334,9 @@
       const loadingSpinner = document.getElementById('loading-spinner');
       const fileInput = document.getElementById('photo');
       const filenameDisplay = document.getElementById('filename-display');
-
       fileInput.addEventListener('change', () => {
         filenameDisplay.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
       });
-
       const dropArea = document.getElementById('drop-area');
 
       function updateDragDropVisibility() {
@@ -350,10 +346,8 @@
           dropArea.style.display = 'block';
         }
       }
-
       updateDragDropVisibility();
       window.addEventListener('resize', updateDragDropVisibility);
-
       ['dragenter', 'dragover'].forEach(eventName => {
         dropArea.addEventListener(eventName, (e) => {
           e.preventDefault();
@@ -361,7 +355,6 @@
           dropArea.classList.add('dragover');
         });
       });
-
       ['dragleave', 'drop'].forEach(eventName => {
         dropArea.addEventListener(eventName, (e) => {
           e.preventDefault();
@@ -369,7 +362,6 @@
           dropArea.classList.remove('dragover');
         });
       });
-
       dropArea.addEventListener('drop', (e) => {
         const files = e.dataTransfer.files;
         if (files.length > 0 && files[0].type.startsWith('image/')) {
@@ -377,7 +369,6 @@
           filenameDisplay.textContent = files[0].name;
         }
       });
-
       const openCameraBtn = document.getElementById('open-camera');
       const toggleCameraBtn = document.getElementById('toggle-camera');
       const cameraModal = document.getElementById('camera-modal');
@@ -390,7 +381,6 @@
       let countdownInterval;
       let countdownNumber;
       const ctx = snapshotCanvas.getContext('2d');
-
       async function startCamera() {
         const facingMode = useFrontCamera ? 'user' : 'environment';
         try {
@@ -414,14 +404,11 @@
       function updateToggleCameraVisibility() {
         const isMobile = window.innerWidth < 768;
         const cameraIsOpen = !cameraModal.classList.contains('hidden');
-
         if (cameraIsOpen) {
-            toggleCameraBtn.style.display = isMobile ? 'inline-block' : 'none';
+          toggleCameraBtn.style.display = isMobile ? 'inline-block' : 'none';
         }
       }
-      
       updateToggleCameraVisibility();
-      
       window.addEventListener('resize', updateToggleCameraVisibility);
 
       function stopCamera() {
@@ -430,7 +417,6 @@
           cameraStream = null;
         }
       }
-
       openCameraBtn.addEventListener('click', async () => {
         cameraModal.classList.remove('hidden');
         snapshotCanvas.classList.add('hidden');
@@ -446,13 +432,11 @@
         await startCamera();
         updateToggleCameraVisibility();
       });
-
       toggleCameraBtn.addEventListener('click', async () => {
         useFrontCamera = !useFrontCamera;
         stopCamera();
         await startCamera();
       });
-
       closeCameraBtn.addEventListener('click', () => {
         stopCamera();
         cameraModal.classList.add('hidden');
@@ -466,7 +450,6 @@
         filenameDisplay.textContent = 'No file chosen';
         updateToggleCameraVisibility();
       });
-
       const countdownOverlay = document.createElement('div');
       countdownOverlay.style.position = 'absolute';
       countdownOverlay.style.top = 0;
@@ -510,6 +493,7 @@
         retakeBtn.addEventListener('click', () => {
           snapshotCanvas.classList.add('hidden');
           retakeBtn.remove();
+          updateToggleCameraVisibility();
           takePhotoBtn.style.display = 'inline-block';
           if (window.innerWidth < 768) {
             toggleCameraBtn.style.display = 'inline-block';
@@ -522,7 +506,6 @@
           filenameDisplay.textContent = 'No file chosen';
         });
       }
-
       takePhotoBtn.addEventListener('click', () => {
         countdownNumber = 3;
         countdownOverlay.textContent = countdownNumber;
@@ -561,6 +544,7 @@
             setTimeout(() => {
               cameraStreamElem.style.display = 'none';
               snapshotCanvas.classList.remove('hidden');
+              updateToggleCameraVisibility();
               createRetakeButton();
             }, 100);
           } else {
@@ -568,7 +552,6 @@
           }
         }, 1000);
       });
-
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         if (!fileInput.files || fileInput.files.length === 0) {
@@ -640,7 +623,6 @@
           console.error(err);
         }
       });
-
       const randomizeBtn = document.getElementById('randomize-style');
       randomizeBtn.addEventListener('click', () => {
         if (!stylesList || stylesList.length === 0) return;
@@ -649,13 +631,11 @@
         customPromptInput.value = randomStyle.prompt;
         styleDisplay.textContent = '';
       });
-
       const promptTextarea = document.getElementById('custom-prompt');
       promptTextarea.addEventListener('input', () => {
         promptTextarea.style.height = 'auto';
         promptTextarea.style.height = promptTextarea.scrollHeight + 'px';
       });
-
       window.addEventListener('load', () => {
         promptTextarea.style.height = 'auto';
         promptTextarea.style.height = promptTextarea.scrollHeight + 'px';
