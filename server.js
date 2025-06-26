@@ -162,9 +162,9 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			negative_prompt: 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry',
 			style_name: '(No style)',
 			num_steps: 50,
-			style_strength_ratio: 10,
+			style_strength_ratio: 20,
 			num_outputs: 1,
-			guidance_scale: 10,
+			guidance_scale: 5,
 			width: 512,
 			height: 512
 		});
@@ -177,9 +177,9 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 				negative_prompt: 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry',
 				style_name: '(No style)',
 				num_steps: 50,
-				style_strength_ratio: 10,
+				style_strength_ratio: 20,
 				num_outputs: 1,
-				guidance_scale: 10,
+				guidance_scale: 5,
 				width: 512,
 				height: 512
 			}
