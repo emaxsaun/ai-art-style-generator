@@ -116,7 +116,7 @@ app.get('/', (req, res) => {
 app.get('/styles', (req, res) => {
 	const stylesWithPrompts = styles.map(name => ({
 		name,
-		prompt: `A highly detailed, realistic portrait img capturing the true likeness of the person, in the style of ${name}`
+		prompt: `A portrait img in the style of ${name}`
 	}));
 	res.json(stylesWithPrompts);
 });
@@ -143,7 +143,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 		} = req.body;
 		const fallbackStyle = styles[Math.floor(Math.random() * styles.length)];
 		const chosenStyle = styles.includes(selectedStyle) ? selectedStyle : fallbackStyle;
-		const prompt = (customPrompt && customPrompt.trim()) ? customPrompt.trim() : `A highly detailed, realistic portrait img capturing the true likeness of the person, in the style of ${chosenStyle}`;
+		const prompt = (customPrompt && customPrompt.trim()) ? customPrompt.trim() : `A portrait img in the style of ${chosenStyle}`;
 		console.log(`Prompt to send: "${prompt}"`);
 
 		const replicate = axios.create({
