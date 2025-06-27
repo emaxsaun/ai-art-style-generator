@@ -104,6 +104,7 @@ const styles = [
 const port = process.env.PORT || 3000;
 
 app.use(cors());
+
 app.use(express.json());
 app.use(express.urlencoded({
 	extended: true
@@ -112,6 +113,7 @@ app.use(express.urlencoded({
 app.use(express.static('public'));
 
 const uploadsDir = path.join(__dirname, 'uploads');
+
 if (!fs.existsSync(uploadsDir)) {
 	fs.mkdirSync(uploadsDir, {
 		recursive: true
@@ -181,6 +183,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 		const fallbackStyle = styles[Math.floor(Math.random() * styles.length)];
 		const chosenStyle = styles.includes(selectedStyle) ? selectedStyle : fallbackStyle;
 		const prompt = (customPrompt && customPrompt.trim()) ? customPrompt.trim() : `A portrait img in the style of ${chosenStyle}`;
+        
 		console.log(`Prompt to send: "${prompt}"`);
 
 		const replicate = axios.create({

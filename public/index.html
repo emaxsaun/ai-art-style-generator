@@ -288,8 +288,8 @@
         <div style="margin-bottom: 16px;">
           <label for="style-select" style="color: white;">Choose a style:</label>
           <select id="style-select" name="style"></select>
-          <label for="model-select" style="color: white;">Choose a model:</label>
-          <select name="model" id="model-select" style="margin-top: 20px;">
+          <label for="model-select" style="color: white; margin-top: 20px;">Choose a model:</label>
+          <select name="model" id="model-select">
             <option value="pulid" selected>PuLID (Default)</option>
             <option value="photomaker">PhotoMaker</option>
           </select>
@@ -311,6 +311,7 @@
     <script>
       let photoTaken = false;
       let stylesList = [];
+      console.log('Start');
       const styleSelect = document.getElementById('style-select');
       const customPromptInput = document.getElementById('custom-prompt');
       async function initializeStyles() {
@@ -347,7 +348,6 @@
         filenameDisplay.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
       });
       const dropArea = document.getElementById('drop-area');
-
       function updateDragDropVisibility() {
         if (window.innerWidth < 768) {
           dropArea.style.display = 'none';
@@ -409,7 +409,6 @@
           cameraModal.classList.add('hidden');
         }
       }
-
       function updateToggleCameraVisibility() {
         const isMobile = window.innerWidth < 768;
         const cameraIsOpen = !cameraModal.classList.contains('hidden');
@@ -421,7 +420,6 @@
       }
       updateToggleCameraVisibility();
       window.addEventListener('resize', updateToggleCameraVisibility);
-
       function stopCamera() {
         if (cameraStream) {
           cameraStream.getTracks().forEach(track => track.stop());
@@ -482,13 +480,11 @@
       countdownOverlay.style.display = 'none';
       cameraModal.style.position = 'relative';
       cameraModal.appendChild(countdownOverlay);
-
       function clearCountdown() {
         clearInterval(countdownInterval);
         countdownOverlay.style.display = 'none';
       }
       let retakeBtn;
-
       function createRetakeButton() {
         retakeBtn = document.createElement('button');
         retakeBtn.textContent = 'Retake';
