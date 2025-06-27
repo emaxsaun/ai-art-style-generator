@@ -1,6 +1,6 @@
 # AI Photobooth
 
-A simple web app that lets users upload a photo and generates AI-powered art in various styles using the Photomake model on the Replicate API.
+A simple web app that lets users upload a photo and generates AI-powered art in various styles using the PuLID: Pure and Lightning ID Customization via Contrastive Alignment model on the Replicate API.
 
 Demo App - https://ai-art-style-generator-production.up.railway.app/
 
