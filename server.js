@@ -174,7 +174,8 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 
 		const {
 			selectedStyle,
-			customPrompt
+			customPrompt,
+			model
 		} = req.body;
 
 		const fallbackStyle = styles[Math.floor(Math.random() * styles.length)];
@@ -189,10 +190,6 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 				"Content-Type": "application/json",
 			},
 		});
-
-		const {
-			model
-		} = req.body;
 
 		let version;
 
@@ -233,8 +230,8 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			};
 		}
 
-		console.log(`Sending Replicate request with input: ${input}`);
-        
+		console.log('Sending Replicate request with input:', JSON.stringify(input, null, 2));
+
 		const start = await replicate.post('/predictions', {
 			version,
 			input
