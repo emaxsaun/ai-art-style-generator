@@ -110,7 +110,7 @@ app.use(express.urlencoded({
 	extended: true
 }));
 
-app.use(express.static('public'));
+app.use(express.static('public/dist'));
 
 const uploadsDir = path.join(__dirname, 'uploads');
 
