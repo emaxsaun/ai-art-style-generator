@@ -187,7 +187,9 @@ const styles = [
 	'Warhol Pop Quad',
 	'Watercolor Bleed',
 	'Vintage Woodblock Print',
-	'Woodcut Ink'
+	'Woodcut Ink',
+    'Barbiecore Glam Pop',
+    'Moebius Line Fantasy'
 ];
 
 const port = process.env.PORT || 3000;
