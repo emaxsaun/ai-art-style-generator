@@ -38,7 +38,7 @@ Demo App - https://ai-art-style-generator-production.up.railway.app/
 
 ### Installation
 
-1. Clone the repository:
+Clone the repository:
 
 ```bash
 git clone https://github.com/emaxsaun/ai-art-style-generator.git
