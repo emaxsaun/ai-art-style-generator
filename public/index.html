@@ -286,13 +286,17 @@
           <p>Or drag and drop an image here</p>
         </div>
         <div style="margin-bottom: 16px;">
-          <label for="style-select" style="color: white;">Choose a style:</label>
-          <select id="style-select" name="style"></select>
-          <label for="model-select" style="color: white; margin-top: 20px;">Choose a model:</label>
-          <select name="model" id="model-select">
-            <option value="pulid" selected>PuLID (Default)</option>
-            <option value="photomaker">PhotoMaker</option>
-          </select>
+          <div style="margin-bottom: 20px;">
+            <label for="style-select" style="color: white;">Choose a style:</label>
+            <select id="style-select" name="style"></select>
+          </div>
+          <div>
+            <label for="model-select" style="color: white;">Choose a model:</label>
+            <select name="model" id="model-select">
+              <option value="pulid" selected>PuLID (Default)</option>
+              <option value="photomaker">PhotoMaker</option>
+            </select>
+          </div>
         </div>
         <div style="margin-bottom: 16px;">
           <label for="custom-prompt" style="color: white;">Custom prompt - Note - The word "img" must be part of it:</label>
