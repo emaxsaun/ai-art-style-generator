@@ -117,7 +117,7 @@ app.get('/', (req, res) => {
 app.get('/styles', (req, res) => {
 	const stylesWithPrompts = styles.map(name => ({
 		name,
-		prompt: `A detailed portrait, stylized as ${name}, keeping facial features, pose, and lighting from the original photo. Highly realistic base image with artistic ${name} elements.`
+		prompt: `A portrait in the style of ${name}`
 	}));
 	res.json(stylesWithPrompts);
 });
