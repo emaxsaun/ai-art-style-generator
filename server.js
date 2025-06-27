@@ -190,6 +190,10 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			},
 		});
 
+		const {
+			model
+		} = req.body;
+
 		let version;
 
 		if (model === 'photomaker') {
@@ -229,7 +233,8 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			};
 		}
 
-        console.log(`Sending Replicate request with input: ${input}`);
+		console.log(`Sending Replicate request with input: ${input}`);
+        
 		const start = await replicate.post('/predictions', {
 			version,
 			input
