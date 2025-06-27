@@ -42,9 +42,9 @@ const styles = [
 	'Art nouveau flourish',
 	'Renaissance portrait',
 	'Cubist interpretation',
-    'Retro',
-    'Realistic',
-    'Stunning',
+	'Retro',
+	'Realistic',
+	'Stunning',
 	'Steampunk gear-laden design',
 	'Afrofuturism vision',
 	'Vintage newspaper print',
@@ -62,9 +62,14 @@ const styles = [
 	'Enhance',
 	'Comic book',
 	'Low Poly 3D',
-    'Barbiecore Glam Pop',
-    'Moebius Line Fantasy',
-    'Astronaut'
+	'Barbiecore Glam Pop',
+	'Moebius Line Fantasy',
+	'Astronaut',
+	'Ink & Bone Gothic Fantasy',
+	'Retro Sci-Fi Pulp Cover',
+	'Hyperreal 3D Render',
+	'Dynamic Action Poster',
+	'Biotech Organic Sci-Fi'
 ];
 
 const port = process.env.PORT || 3000;
