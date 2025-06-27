@@ -18,7 +18,7 @@ const styles = [
 	'80s Comic Book Art',
     '90s Grunge Graphic',
 	'Afrofuturism Vision',
-	'Acrylic Pour Abstract',
+	'Acrylic Pour',
 	'Art Deco Luxe',
 	'Art Nouveau Flourish',
 	'Astronaut',
