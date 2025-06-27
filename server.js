@@ -5,6 +5,7 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
+console.log("🚀 Server is starting up...");
 
 if (!process.env.REPLICATE_API_TOKEN) {
 	console.error('Missing REPLICATE_API_TOKEN in .env file');
