@@ -116,7 +116,7 @@ app.get('/', (req, res) => {
 app.get('/styles', (req, res) => {
 	const stylesWithPrompts = styles.map(name => ({
 		name,
-		prompt: `A detailed portrait, stylized as a ${name}, keeping facial features, pose, and lighting from the original photo. Highly realistic base image with artistic ${name} elements.`
+		prompt: `A detailed portrait, stylized as ${name}, keeping facial features, pose, and lighting from the original photo. Highly realistic base image with artistic ${name} elements.`
 	}));
 	res.json(stylesWithPrompts);
 });
@@ -159,14 +159,13 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 		console.log('Sending Replicate request with input:', {
             main_face_image: imageUrl,
             prompt,
-            num_outputs: 1,
+            num_samples: 1,
             negative_prompt: 'nsfw, flaws in the eyes, flaws in the face, flaws, lowres, non-HDRi, low quality, worst quality,artifacts noise, text, watermark, glitch, deformed, mutated, ugly, disfigured, hands, low resolution, partially rendered objects,  deformed or partially rendered eyes, deformed, deformed eyeballs, cross-eyed,blurry',
             cfg_scale: 1.2,
             identity_scale: 0.8,
             generation_mode: 'fidelity',
             output_format: 'jpg',
             output_quality: 80,
-            num_samples: 4,
             num_steps: 4,
             image_height: 1024,
             image_width: 768
@@ -177,14 +176,13 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			input: {
 				main_face_image: imageUrl,
 				prompt,
-                num_outputs: 1,
+                num_samples: 1,
 				negative_prompt: 'nsfw, flaws in the eyes, flaws in the face, flaws, lowres, non-HDRi, low quality, worst quality,artifacts noise, text, watermark, glitch, deformed, mutated, ugly, disfigured, hands, low resolution, partially rendered objects,  deformed or partially rendered eyes, deformed, deformed eyeballs, cross-eyed,blurry',
                 cfg_scale: 1.2,
                 identity_scale: 0.8,
                 generation_mode: 'fidelity',
                 output_format: 'jpg',
                 output_quality: 80,
-                num_samples: 4,
 				num_steps: 4,
 				image_height: 1024,
                 image_width: 768
