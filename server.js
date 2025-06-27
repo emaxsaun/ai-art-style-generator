@@ -88,10 +88,10 @@ const styles = [
 	'Steampunk Gear-Laden Design',
 	'Studio Ghibli Character',
 	'Surreal Dreamscape',
-    'Urban Cityscape',
 	'Van Gogh Style',
 	'Vaporwave Aesthetic',
 	'Vintage Newspaper Print',
+    'Walking in an Urban Cityscape',
 	'Watercolor Painting',
 	'Wireframe Mesh Render',
 	'Zbrush Sculpt Render'
