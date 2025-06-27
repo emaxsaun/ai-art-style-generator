@@ -169,7 +169,6 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 		}
 
 		console.log('File uploaded:', req.file);
-
 		const imagePath = req.file.path;
 		const filename = req.file.filename;
 		const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
@@ -183,6 +182,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 		const fallbackStyle = styles[Math.floor(Math.random() * styles.length)];
 		const chosenStyle = styles.includes(selectedStyle) ? selectedStyle : fallbackStyle;
 		const prompt = (customPrompt && customPrompt.trim()) ? customPrompt.trim() : `A portrait img in the style of ${chosenStyle}`;
+        const negative_prompt = 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, flaws in the eyes, flaws in the face, flaws, non-HDRi, artifacts noise, glitch, deformed, mutated, ugly, disfigured, hands, low resolution, partially rendered objects, deformed or partially rendered eyes, deformed eyeballs, cross-eyed';
 
 		console.log(`Prompt to send: "${prompt}"`);
 
@@ -208,7 +208,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			input = {
 				input_image: imageUrl,
 				prompt,
-				negative_prompt: 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, flaws in the eyes, flaws in the face, flaws, non-HDRi, artifacts noise, glitch, deformed, mutated, ugly, disfigured, hands, low resolution, partially rendered objects, deformed or partially rendered eyes, deformed eyeballs, cross-eyed',
+				negative_prompt: negative_prompt,
 				style_name: '(No style)',
 				num_steps: 50,
 				style_strength_ratio: 20,
@@ -221,7 +221,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			input = {
 				main_face_image: imageUrl,
 				prompt,
-				negative_prompt: 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, flaws in the eyes, flaws in the face, flaws, non-HDRi, artifacts noise, glitch, deformed, mutated, ugly, disfigured, hands, low resolution, partially rendered objects, deformed or partially rendered eyes, deformed eyeballs, cross-eyed',
+				negative_prompt: negative_prompt,
 				cfg_scale: 1.2,
 				identity_scale: 0.8,
 				generation_mode: 'fidelity',
