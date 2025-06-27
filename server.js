@@ -14,20 +14,20 @@ if (!process.env.REPLICATE_API_TOKEN) {
 const app = express();
 
 const styles = [
-    '70s Psychedelic Poster',
+	'70s Psychedelic Poster',
 	'80s Comic Book Art',
-    '90s Grunge Graphic',
+	'90s Grunge Graphic',
 	'Afrofuturism Vision',
 	'Acrylic',
 	'Art Deco Luxe',
 	'Art Nouveau Flourish',
 	'Barbiecore Glam Pop',
-    'Baroque oil painting',
+	'Baroque oil painting',
 	'Biopunk Mutation',
 	'Brutalist Poster Design',
-    'Cartoon Astronaut',
+	'Cartoon Astronaut',
 	'Charcoal Drawing',
-    'Cel-Shaded Anime',
+	'Cel-Shaded Anime',
 	'Chrome Techno Armor',
 	'Classic Comic Strip',
 	'Classic Fantasy Painting',
@@ -44,7 +44,7 @@ const styles = [
 	'Dreamcore Vibes',
 	'Dreamlike Double Exposure',
 	'Dramatic Baroque Style',
-    'Early 2000s Pop Graphics',
+	'Early 2000s Pop Graphics',
 	'Ethereal Fairy World',
 	'Expressionist Brush Chaos',
 	'Fantasy Oil Painting',
@@ -52,7 +52,7 @@ const styles = [
 	'Fantasy art',
 	'Film Noir',
 	'Glitchcore Distortion',
-    'Glitch Vaporwave',
+	'Glitch Vaporwave',
 	'Golden Age Comic Strip',
 	'Graffiti Street Art',
 	'Haunted Vintage Photo',
@@ -62,24 +62,24 @@ const styles = [
 	'Ink & Bone Gothic Fantasy',
 	'Ink and Wash Drawing',
 	'Ink Comic',
-    'Line art Illustration',
+	'Line art Illustration',
 	'Low-Poly 3D Render',
-    'Manga Character',
+	'Manga Character',
 	'Modern Minimalist',
 	'Moebius Line Fantasy',
 	'Moody Film',
-    'Metal',
-    'Mughal Miniature Painting',
+	'Metal',
+	'Mughal Miniature Painting',
 	'Mythic Tarot Card',
 	'Mythical Creature Transformation',
 	'Neon Punk',
 	'Neon-lit Synthwave',
-    'Painting',
-    'Papercut Layered Illustration',
-    'Photographic',
+	'Painting',
+	'Papercut Layered Illustration',
+	'Photographic',
 	'Photorealistic Render',
 	'Pixar-style 3D Character',
-    'Pixel Art 8-Bit',
+	'Pixel Art 8-Bit',
 	'Pencil Sketch',
 	'Pop Art Portrait',
 	'Post-apocalyptic Wasteland',
@@ -92,7 +92,7 @@ const styles = [
 	'Steampunk Gear-Laden Design',
 	'Studio Ghibli Character',
 	'Surreal Dreamscape',
-    'Urban',
+	'Urban',
 	'Van Gogh Style',
 	'Vaporwave Aesthetic',
 	'Vintage Newspaper Print',
@@ -176,7 +176,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			selectedStyle,
 			customPrompt
 		} = req.body;
-        
+
 		const fallbackStyle = styles[Math.floor(Math.random() * styles.length)];
 		const chosenStyle = styles.includes(selectedStyle) ? selectedStyle : fallbackStyle;
 		const prompt = (customPrompt && customPrompt.trim()) ? customPrompt.trim() : `A portrait img in the style of ${chosenStyle}`;
@@ -190,39 +190,49 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			},
 		});
 
-		const version = "43d309c37ab4e62361e5e29b8e9e867fb2dcbcec77ae91206a8d95ac5dd451a0";
+		let version;
 
-		console.log('Sending Replicate request with input:', {
-            main_face_image: imageUrl,
-            prompt,
-            num_samples: 1,
-            negative_prompt: 'nsfw, flaws in the eyes, flaws in the face, flaws, lowres, non-HDRi, low quality, worst quality,artifacts noise, text, watermark, glitch, deformed, mutated, ugly, disfigured, hands, low resolution, partially rendered objects,  deformed or partially rendered eyes, deformed, deformed eyeballs, cross-eyed,blurry',
-            cfg_scale: 1.2,
-            identity_scale: 0.8,
-            generation_mode: 'fidelity',
-            output_format: 'jpg',
-            output_quality: 80,
-            num_steps: 4,
-            image_height: 1024,
-            image_width: 768
-		});
+		if (model === 'photomaker') {
+			version = "ddfc2b08d209f9fa8c1eca692712918bd449f695dabb4a958da31802a9570fe4";
+		} else {
+			version = "43d309c37ab4e62361e5e29b8e9e867fb2dcbcec77ae91206a8d95ac5dd451a0";
+		}
 
-		const start = await replicate.post('/predictions', {
-			version,
-			input: {
+		let input;
+
+		if (model === 'photomaker') {
+			input = {
+				input_image: imageUrl,
+				prompt,
+				negative_prompt: 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry',
+				style_name: '(No style)',
+				num_steps: 50,
+				style_strength_ratio: 20,
+				num_outputs: 1,
+				guidance_scale: 5,
+				width: 512,
+				height: 512
+			};
+		} else {
+			input = {
 				main_face_image: imageUrl,
 				prompt,
-                num_samples: 1,
 				negative_prompt: 'nsfw, flaws in the eyes, flaws in the face, flaws, lowres, non-HDRi, low quality, worst quality,artifacts noise, text, watermark, glitch, deformed, mutated, ugly, disfigured, hands, low resolution, partially rendered objects,  deformed or partially rendered eyes, deformed, deformed eyeballs, cross-eyed,blurry',
-                cfg_scale: 1.2,
-                identity_scale: 0.8,
-                generation_mode: 'fidelity',
-                output_format: 'jpg',
-                output_quality: 80,
+				cfg_scale: 1.2,
+				identity_scale: 0.8,
+				generation_mode: 'fidelity',
+				output_format: 'jpg',
+				output_quality: 80,
 				num_steps: 4,
 				image_height: 1024,
-                image_width: 768
-			}
+				image_width: 768
+			};
+		}
+
+        console.log(`Sending Replicate request with input: ${input}`);
+		const start = await replicate.post('/predictions', {
+			version,
+			input
 		});
 
 		const predictionUrl = start.data.urls.get;
