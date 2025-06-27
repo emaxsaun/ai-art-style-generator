@@ -1,6 +1,6 @@
-# AI Photobooth
+# Photobooth
 
-A simple web app that lets users upload a photo and generates AI-powered art in various styles using the PuLID: Pure and Lightning ID Customization via Contrastive Alignment model on the Replicate API.
+A simple web app that lets users upload a photo and generates art in various styles using the PuLID: Pure and Lightning ID Customization via Contrastive Alignment model on the Replicate API.
 
 Demo App - https://ai-art-style-generator-production.up.railway.app/
 
@@ -10,7 +10,7 @@ Demo App - https://ai-art-style-generator-production.up.railway.app/
 
 - Upload your own photo / Camera upload
 - Randomly applies one of many creative art styles or choose your own styles/prompt
-- Generates AI art based on your input image
+- Generates art based on your input image
 - Displays generated image
 - Responsive and styled frontend with a clean UI
 - Shows loading spinner during image generation
@@ -23,7 +23,7 @@ Demo App - https://ai-art-style-generator-production.up.railway.app/
 - Node.js & Express — backend server and API proxy
 - Multer — file upload handling
 - Axios — HTTP requests to Replicate API
-- Replicate API — AI image generation with Stable Diffusion
+- Replicate API — Image generation
 - HTML/CSS/JavaScript — frontend UI and interactions
 
 ---

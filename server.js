@@ -79,7 +79,17 @@ const styles = [
     'Glitchcore Distortion',
     'Golden Age Comic Strip',
     'Haunted Vintage Photo',
-    'Zbrush Sculpt Render'
+    'Zbrush Sculpt Render',
+    'Collage Surrealism',
+    'Acrylic Pour Abstract',
+    'Biopunk Mutation',
+    'Chrome Techno Armor',
+    'Dieselpunk Grunge',
+    'Hypercolor Streetwear',
+    'Ink Comic Noir',
+    'Mythic Tarot Card',
+    'Retro Pixel Portrait',
+    'Wireframe Mesh Render'
 ];
 
 const port = process.env.PORT || 3000;
@@ -87,7 +97,7 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({
-	extended: true
+	extended: tru
 }));
 
 app.use(express.static('public'));
