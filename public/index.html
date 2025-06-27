@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Photobooth app to upload photos, choose styles and models, and generate stylized images." />
-    <meta name="keywords" content="photobooth, photo upload, photo styles, AI photo generation, image filter" />    
+    <meta name="keywords" content="photobooth, photo upload, photo styles, AI photo generation, image filter" />
     <title>Photobooth</title>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
@@ -353,6 +353,7 @@
         filenameDisplay.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
       });
       const dropArea = document.getElementById('drop-area');
+
       function updateDragDropVisibility() {
         if (window.innerWidth < 768) {
           dropArea.style.display = 'none';
@@ -414,6 +415,7 @@
           cameraModal.classList.add('hidden');
         }
       }
+
       function updateToggleCameraVisibility() {
         const isMobile = window.innerWidth < 768;
         const cameraIsOpen = !cameraModal.classList.contains('hidden');
@@ -425,6 +427,7 @@
       }
       updateToggleCameraVisibility();
       window.addEventListener('resize', updateToggleCameraVisibility);
+
       function stopCamera() {
         if (cameraStream) {
           cameraStream.getTracks().forEach(track => track.stop());
@@ -485,11 +488,13 @@
       countdownOverlay.style.display = 'none';
       cameraModal.style.position = 'relative';
       cameraModal.appendChild(countdownOverlay);
+
       function clearCountdown() {
         clearInterval(countdownInterval);
         countdownOverlay.style.display = 'none';
       }
       let retakeBtn;
+
       function createRetakeButton() {
         retakeBtn = document.createElement('button');
         retakeBtn.textContent = 'Retake';
