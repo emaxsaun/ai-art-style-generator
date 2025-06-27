@@ -104,7 +104,6 @@ const styles = [
 const port = process.env.PORT || 3000;
 
 app.use(cors());
-
 app.use(express.json());
 app.use(express.urlencoded({
 	extended: true
@@ -228,6 +227,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 				output_format: 'jpg',
 				output_quality: 80,
 				num_steps: 4,
+                num_samples: 1,
 				image_height: 1024,
 				image_width: 768
 			};
