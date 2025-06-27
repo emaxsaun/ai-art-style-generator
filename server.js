@@ -147,7 +147,7 @@ const styles = [
 	'Retro Decal',
 	'Retro Futurist',
 	'Retro VHS',
-	'Rock Poster70s',
+	'Rock Poster 70s',
 	'Royal Bust',
 	'Sepia Daguerreotype',
 	'Sketch Caricature',
@@ -242,7 +242,7 @@ app.get('/', (req, res) => {
 app.get('/styles', (req, res) => {
 	const stylesWithPrompts = styles.map(name => ({
 		name,
-		prompt: `A portrait in the style of ${name}`
+		prompt: `A portrait image in the style of ${name}`
 	}));
 	res.json(stylesWithPrompts);
 });
