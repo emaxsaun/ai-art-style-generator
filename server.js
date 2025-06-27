@@ -88,7 +88,7 @@ const styles = [
 	'Steampunk Gear-Laden Design',
 	'Studio Ghibli Character',
 	'Surreal Dreamscape',
-    'Ubran Cityscape',
+    'Urban Cityscape',
 	'Van Gogh Style',
 	'Vaporwave Aesthetic',
 	'Vintage Newspaper Print',
