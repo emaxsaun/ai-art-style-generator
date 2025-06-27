@@ -22,10 +22,12 @@ const styles = [
 	'Art Deco Luxe',
 	'Art Nouveau Flourish',
 	'Barbiecore Glam Pop',
+    'Baroque oil painting',
 	'Biopunk Mutation',
 	'Brutalist Poster Design',
     'Cartoon Astronaut',
 	'Charcoal Drawing',
+    'Cel-Shaded Anime',
 	'Chrome Techno Armor',
 	'Classic Comic Strip',
 	'Classic Fantasy Painting',
@@ -60,6 +62,7 @@ const styles = [
 	'Ink & Bone Gothic Fantasy',
 	'Ink and Wash Drawing',
 	'Ink Comic',
+    'Line art Illustration',
 	'Low-Poly 3D Render',
     'Manga Character',
 	'Modern Minimalist',
@@ -73,6 +76,7 @@ const styles = [
 	'Neon-lit Synthwave',
     'Painting',
     'Papercut Layered Illustration',
+    'Photographic',
 	'Photorealistic Render',
 	'Pixar-style 3D Character',
     'Pixel Art 8-Bit',
@@ -147,7 +151,7 @@ app.get('/', (req, res) => {
 app.get('/styles', (req, res) => {
 	const stylesWithPrompts = styles.map(name => ({
 		name,
-		prompt: `A portrait image in the style of ${name}`
+		prompt: `A portrait img in the style of ${name}`
 	}));
 	res.json(stylesWithPrompts);
 });
@@ -172,6 +176,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			selectedStyle,
 			customPrompt
 		} = req.body;
+        
 		const fallbackStyle = styles[Math.floor(Math.random() * styles.length)];
 		const chosenStyle = styles.includes(selectedStyle) ? selectedStyle : fallbackStyle;
 		const prompt = (customPrompt && customPrompt.trim()) ? customPrompt.trim() : `A portrait img in the style of ${chosenStyle}`;
