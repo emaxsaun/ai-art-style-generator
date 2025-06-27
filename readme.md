@@ -2,7 +2,7 @@
 
 A simple web app that lets users upload a photo and generates art in various styles using the PuLID: Pure and Lightning ID Customization via Contrastive Alignment model and the PhotoMaker model on the Replicate API.
 
-Demo App - https://ai-art-style-generator-production.up.railway.app/
+Demo - https://ai-art-style-generator-production.up.railway.app/
 
 ---
 
