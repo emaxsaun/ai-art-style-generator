@@ -272,7 +272,7 @@
         <div class="file-upload-wrapper">
           <label for="photo" class="custom-file-label">Choose File</label>
           <input type="file" name="photo" id="photo" accept="image/*" />
-          <button id="open-camera" type="button">📷 Use Camera</button>
+          <button id="open-camera" type="button" style="padding: 12px 36px; margin-top: -8px">📷 Use Camera</button>
           <div id="camera-modal" class="hidden">
             <video id="camera-stream" autoplay playsinline></video>
             <button id="take-photo" type="button">Take Photo</button>
@@ -302,10 +302,10 @@
         </div>
         <div style="margin-bottom: 16px;">
           <label for="custom-prompt" style="color: white;">Custom prompt - Note - The word "img" must be part of it:</label>
-          <textarea id="custom-prompt" name="prompt" rows="4" style="width: 100%; padding: 8px; border-radius: 8px; border: none; margin-bottom: 24px;"></textarea>
+          <textarea id="custom-prompt" name="prompt" rows="4" style="width: 97%; padding: 8px; border-radius: 8px; border: none; margin-bottom: 24px;"></textarea>
           <button id="randomize-style" type="button" style="background: #4caf50; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.6);"> 🔀 Randomize Style </button>
         </div>
-        <button type="submit">Generate Photo</button>
+        <button type="submit" style="width: 250px;">Generate Photo</button>
       </form>
       <div id="style-display"></div>
       <img id="result-img" alt="Generated Photo" />
