@@ -58,7 +58,7 @@ const styles = [
 	'Cinematic',
 	'Disney Character',
 	'Digital Art',
-	'Photographic (Default)',
+	'Photographic',
 	'Fantasy art',
 	'Neonpunk',
 	'Enhance',
