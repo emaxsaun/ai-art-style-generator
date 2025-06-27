@@ -207,7 +207,8 @@
         text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
       }
 
-      #style-select {
+      #style-select,
+      #model-select {
         width: 100%;
         padding: 12px 16px;
         border-radius: 12px;
@@ -222,7 +223,9 @@
       }
 
       #style-select:hover,
-      #style-select:focus {
+      #style-select:focus,
+      #model-select:hover,
+      #model-select:focus {
         background-color: #fff;
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
         outline: none;
@@ -285,7 +288,7 @@
         <div style="margin-bottom: 16px;">
           <label for="style-select" style="color: white;">Choose a style:</label>
           <select id="style-select" name="style"></select>
-          <label for="model-select">Choose a model:</label>
+          <label for="model-select" style="color: white;">Choose a model:</label>
           <select name="model" id="model-select">
             <option value="pulid" selected>PuLID (Default)</option>
             <option value="photomaker">PhotoMaker</option>
