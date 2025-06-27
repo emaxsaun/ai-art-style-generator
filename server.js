@@ -14,7 +14,9 @@ if (!process.env.REPLICATE_API_TOKEN) {
 const app = express();
 
 const styles = [
+    '70s Psychedelic Poster',
 	'80s Comic Book Art',
+    '90s Grunge Graphic',
 	'Afrofuturism Vision',
 	'Acrylic Pour Abstract',
 	'Art Deco Luxe',
@@ -41,6 +43,7 @@ const styles = [
 	'Dreamcore Vibes',
 	'Dreamlike Double Exposure',
 	'Dramatic Baroque Style',
+    'Early 2000s Pop Graphics',
 	'Ethereal Fairy World',
 	'Expressionist Brush Chaos',
 	'Fantasy Oil Painting',
