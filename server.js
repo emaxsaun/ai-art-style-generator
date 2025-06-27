@@ -69,7 +69,17 @@ const styles = [
 	'Retro Sci-Fi Pulp Cover',
 	'Hyperreal 3D Render',
 	'Dynamic Action Poster',
-	'Biotech Organic Sci-Fi'
+	'Biotech Organic Sci-Fi',
+    'Art Deco Luxe',
+    'Brutalist Graphic Design',
+    'Concept Art Matte Painting',
+    'Cyber Samurai Portrait',
+    'Dreamcore Vibes',
+    'Expressionist Brush Chaos',
+    'Glitchcore Distortion',
+    'Golden Age Comic Strip',
+    'Haunted Vintage Photo',
+    'Zbrush Sculpt Render'
 ];
 
 const port = process.env.PORT || 3000;
