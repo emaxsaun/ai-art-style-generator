@@ -116,7 +116,7 @@ app.get('/', (req, res) => {
 app.get('/styles', (req, res) => {
 	const stylesWithPrompts = styles.map(name => ({
 		name,
-		prompt: `A portrait img in the style of ${name}`
+		prompt: `A detailed portrait, stylized as a ${name}, keeping facial features, pose, and lighting from the original photo. Highly realistic base image with artistic ${name} elements.`
 	}));
 	res.json(stylesWithPrompts);
 });
@@ -154,34 +154,40 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			},
 		});
 
-		const version = "ddfc2b08d209f9fa8c1eca692712918bd449f695dabb4a958da31802a9570fe4";
+		const version = "43d309c37ab4e62361e5e29b8e9e867fb2dcbcec77ae91206a8d95ac5dd451a0";
 
 		console.log('Sending Replicate request with input:', {
-			input_image: imageUrl,
-			prompt,
-			negative_prompt: 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry',
-			style_name: '(No style)',
-			num_steps: 50,
-			style_strength_ratio: 20,
-			num_outputs: 1,
-			guidance_scale: 5,
-			width: 512,
-			height: 512
+            main_face_image: imageUrl,
+            prompt,
+            num_outputs: 1,
+            negative_prompt: 'nsfw, flaws in the eyes, flaws in the face, flaws, lowres, non-HDRi, low quality, worst quality,artifacts noise, text, watermark, glitch, deformed, mutated, ugly, disfigured, hands, low resolution, partially rendered objects,  deformed or partially rendered eyes, deformed, deformed eyeballs, cross-eyed,blurry',
+            cfg_scale: 1.2,
+            identity_scale: 0.8,
+            generation_mode: 'fidelity',
+            output_format: 'jpg',
+            output_quality: 80,
+            num_samples: 4,
+            num_steps: 4,
+            image_height: 1024,
+            image_width: 768
 		});
 
 		const start = await replicate.post('/predictions', {
 			version,
 			input: {
-				input_image: imageUrl,
+				main_face_image: imageUrl,
 				prompt,
-				negative_prompt: 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry',
-				style_name: '(No style)',
-				num_steps: 50,
-				style_strength_ratio: 20,
-				num_outputs: 1,
-				guidance_scale: 5,
-				width: 512,
-				height: 512
+                num_outputs: 1,
+				negative_prompt: 'nsfw, flaws in the eyes, flaws in the face, flaws, lowres, non-HDRi, low quality, worst quality,artifacts noise, text, watermark, glitch, deformed, mutated, ugly, disfigured, hands, low resolution, partially rendered objects,  deformed or partially rendered eyes, deformed, deformed eyeballs, cross-eyed,blurry',
+                cfg_scale: 1.2,
+                identity_scale: 0.8,
+                generation_mode: 'fidelity',
+                output_format: 'jpg',
+                output_quality: 80,
+                num_samples: 4,
+				num_steps: 4,
+				image_height: 1024,
+                image_width: 768
 			}
 		});
 
