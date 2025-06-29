@@ -521,6 +521,7 @@
         filenameDisplay.textContent = 'No file chosen';
         updateToggleCameraVisibility();
         photoTaken = false;
+        openCameraBtn.disabled = false;
       });
       const countdownOverlay = document.createElement('div');
       countdownOverlay.style.position = 'absolute';
