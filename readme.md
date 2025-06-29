@@ -8,23 +8,23 @@ A simple web app that lets users upload a photo and generates portrait art in va
 
 ## Features
 
-- Upload a photo or use your camera to capture one  
-- Choose from many creative art styles or use a custom prompt  
-- Generates stylized art based on your input image  
-- Displays generated image instantly  
-- Responsive, clean, and styled frontend UI  
-- Shows loading spinner during image generation  
-- Graceful error handling  
+- Upload a photo or use your camera to capture one
+- Choose from many creative art styles or use a custom prompt
+- Generates stylized art based on your input image
+- Displays generated image instantly
+- Responsive, clean, and styled frontend UI
+- Shows loading spinner during image generation
+- Graceful error handling
 
 ---
 
 ## Technologies Used
 
-- Node.js & Express — backend server and API proxy  
-- Multer — file upload handling  
-- Axios — HTTP requests to Replicate API  
-- Replicate API — image generation service  
-- HTML/CSS/JavaScript — frontend UI and interactions  
+- Node.js & Express — backend server and API proxy
+- Multer — file upload handling
+- Axios — HTTP requests to Replicate API
+- Replicate API — image generation service
+- HTML/CSS/JavaScript — frontend UI and interactions
 
 ---
 
@@ -33,7 +33,7 @@ A simple web app that lets users upload a photo and generates portrait art in va
 ### Prerequisites
 
 - Node.js v16 or higher using npm or yarn
-- A Replicate API token ([sign up here](https://replicate.com/signin))  
+- A Replicate API token ([sign up here](https://replicate.com/signin))
 
 ### Installation
 
