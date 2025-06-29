@@ -47,4 +47,4 @@ cd ai-art-style-generator
 
 Note - Make sure to add a `.env` file with `REPLICATE_API_TOKEN=<YOUR_ACTUAL_API_TOKEN>`
 
-Please note, if using a custom prompt, the word "img" must be part of it! Have fun!
+Note, if using a custom prompt, the word "img" must be included for the PhotoMaker model, and the custom prompt is disabled for the Face to Many model. Have fun!
