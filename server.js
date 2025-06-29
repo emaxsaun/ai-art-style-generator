@@ -183,10 +183,10 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
         const filename = path.basename(rgbPath);
         const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
         await sharp(originalPath)
-          .toColourspace('rgb')
+          .toColorspace('srgb')
+          .jpeg()
           .toFile(rgbPath);
-        await fs.promises.unlink(originalPath);
-        await fs.promises.unlink(rgbPath);
+        await fs.promises.unlink(originalPath);        
 
 		const {
 			selectedStyle,
