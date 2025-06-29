@@ -176,17 +176,17 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			});
 		}
 
-        console.log('File uploaded:', req.file);
-        const sharp = require('sharp');
-        const originalPath = req.file.path;
-        const rgbPath = `${originalPath}-rgb.jpg`;
-        const filename = path.basename(rgbPath);
-        const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
-        await sharp(originalPath)
-          .toColorspace('srgb')
-          .jpeg()
-          .toFile(rgbPath);
-        await fs.promises.unlink(originalPath);        
+		console.log('File uploaded:', req.file);
+		const sharp = require('sharp');
+		const originalPath = req.file.path;
+		const rgbPath = `${originalPath}-rgb.jpg`;
+		const filename = path.basename(rgbPath);
+		const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
+		await sharp(originalPath)
+			.toColorspace('srgb')
+			.jpeg()
+			.toFile(rgbPath);
+		await fs.promises.unlink(originalPath);
 
 		const {
 			selectedStyle,
@@ -282,7 +282,6 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 		});
 
 		const predictionUrl = start.data.urls.get;
-
 		let finalImage;
 		let attempts = 0;
 		const maxAttempts = 60;
