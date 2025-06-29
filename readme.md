@@ -70,6 +70,6 @@ npm run dev
 
 ---
 
-**Note:** Image generation requires deployment on a public URL (e.g., Railway). It does not work on localhost.
+**Note:** Image generation requires deployment on a public URL (e.g., Railway). It does not work on localhost. Message me if you want this added.
 
 **Tip:** When using a custom prompt with the PhotoMaker model, include the word `img`. The custom prompt is disabled for the Face to Many model.
