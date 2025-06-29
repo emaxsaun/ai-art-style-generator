@@ -1,4 +1,3 @@
-// Build
 const esbuild = require('esbuild');
 const fs = require('fs');
 const path = require('path');
@@ -15,6 +14,7 @@ async function bundleServer() {
       minify: true,
       sourcemap: false,
       external: [],
+	  logLevel: 'info'
     });
     console.log('✅ Bundled server.js');
   } catch (err) {
@@ -29,7 +29,7 @@ async function minifyHTMLFile() {
   const distHtmlPath = path.join(distDir, 'index.html');
 
   if (!fs.existsSync(htmlPath)) {
-    console.warn(`⚠️  Could not find ${htmlPath}`);
+    console.warn(`⚠️ Could not find ${htmlPath}`);
     return;
   }
 
