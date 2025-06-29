@@ -101,6 +101,15 @@ const styles = [
 	'Zbrush Sculpt Render'
 ];
 
+const fofrStyles = [
+	'3D',
+	'Emoji',
+	'Video game',
+	'Pixels',
+	'Clay',
+	'Toy'
+];
+
 const port = process.env.PORT || 3000;
 
 app.use(cors());
@@ -178,10 +187,20 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			model
 		} = req.body;
 
-		const fallbackStyle = styles[Math.floor(Math.random() * styles.length)];
-		const chosenStyle = styles.includes(selectedStyle) ? selectedStyle : fallbackStyle;
-		const prompt = (customPrompt && customPrompt.trim()) ? customPrompt.trim() : `A portrait img in the style of ${chosenStyle}`;
-        const negative_prompt = 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, flaws in the eyes, flaws in the face, flaws, non-HDRi, artifacts noise, glitch, deformed, mutated, ugly, disfigured, hands, low resolution, partially rendered objects, deformed or partially rendered eyes, deformed eyeballs, cross-eyed';
+		const fallbackStyle = model === 'fofr' ?
+			fofrStyles[Math.floor(Math.random() * fofrStyles.length)] :
+			styles[Math.floor(Math.random() * styles.length)];
+
+		const validStyleList = model === 'fofr' ? fofrStyles : styles;
+
+		const chosenStyle = validStyleList.includes(selectedStyle) ? selectedStyle : fallbackStyle;
+
+		// Force prompt for fofr (no customPrompt allowed)
+		const prompt = model === 'fofr' ?
+			`A portrait img in the style of ${chosenStyle}` :
+			(customPrompt && customPrompt.trim()) ? customPrompt.trim() : `A portrait img in the style of ${chosenStyle}`;
+
+		const negative_prompt = 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, flaws in the eyes, flaws in the face, flaws, non-HDRi, artifacts noise, glitch, deformed, mutated, ugly, disfigured, hands, low resolution, partially rendered objects, deformed or partially rendered eyes, deformed eyeballs, cross-eyed';
 
 		console.log(`Prompt to send: "${prompt}"`);
 
@@ -197,6 +216,8 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 
 		if (model === 'photomaker') {
 			version = "ddfc2b08d209f9fa8c1eca692712918bd449f695dabb4a958da31802a9570fe4";
+		} else if (model === 'fofr') {
+			version = "a07f252abbbd832009640b27f063ea52d87d7a23a185ca165bec23b5adc8deaf";
 		} else {
 			version = "43d309c37ab4e62361e5e29b8e9e867fb2dcbcec77ae91206a8d95ac5dd451a0";
 		}
@@ -216,6 +237,20 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 				width: 512,
 				height: 512
 			};
+		} else if (model === 'fofr') {
+			input = {
+				image: imageUrl,
+				prompt,
+				style: chosenStyle,
+				negative_prompt: negative_prompt,
+				denoising_strength: 0.65,
+				prompt_strength: 4.5,
+				control_depth_strength: 0.8,
+				instant_id_strength: 0.8,
+				lora_scale: 1,
+				width: 768,
+				height: 768
+			};
 		} else {
 			input = {
 				main_face_image: imageUrl,
@@ -227,7 +262,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 				output_format: 'jpg',
 				output_quality: 80,
 				num_steps: 4,
-                num_samples: 1,
+				num_samples: 1,
 				image_height: 1024,
 				image_width: 768
 			};

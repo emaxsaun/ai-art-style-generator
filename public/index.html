@@ -253,6 +253,13 @@
         outline: none;
       }
 
+      #custom-prompt:disabled {
+        background-color: rgba(255, 255, 255, 0.5);
+        cursor: not-allowed;
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15) !important;
+        border: 1px solid #ff6b6b !important;
+      }
+
       .mirror-preview {
         transform: scaleX(-1);
       }
@@ -297,6 +304,7 @@
             <select name="model" id="model-select">
               <option value="pulid" selected>PuLID (Default)</option>
               <option value="photomaker">PhotoMaker</option>
+              <option value="fofr">Face to Many</option>
             </select>
           </div>
         </div>
@@ -334,7 +342,11 @@
         styleSelect.value = randomStyle.name;
         customPromptInput.value = randomPrompt;
         styleSelect.addEventListener('change', () => {
+          const selectedModel = modelSelect.value;
           const selectedName = styleSelect.value;
+          if (selectedModel === 'fofr') {
+            customPromptInput.value = `A portrait img in the style of ${selectedName}`;
+          }
           const selectedStyle = styles.find(s => s.name === selectedName);
           if (selectedStyle) {
             customPromptInput.value = selectedStyle.prompt;
@@ -342,6 +354,41 @@
         });
       }
       initializeStyles();
+      const fofrStyles = ['3D', 'Emoji', 'Video game', 'Pixels', 'Clay', 'Toy'];
+      const modelSelect = document.getElementById('model-select');
+      modelSelect.addEventListener('change', () => {
+        const selectedModel = modelSelect.value;
+        if (selectedModel === 'fofr') {
+          const randomFofrStyle = fofrStyles[Math.floor(Math.random() * fofrStyles.length)];
+          styleSelect.innerHTML = '';
+          fofrStyles.forEach(style => {
+            const option = document.createElement('option');
+            option.value = style;
+            option.textContent = style;
+            styleSelect.appendChild(option);
+          });
+          styleSelect.value = randomFofrStyle;
+          customPromptInput.value = `A portrait img in the style of ${randomFofrStyle}`;
+          customPromptInput.disabled = true;
+          customPromptInput.style.opacity = '0.6';
+        } else {
+          const currentStyle = styleSelect.value;
+          styleSelect.innerHTML = '';
+          stylesList.forEach(style => {
+            const option = document.createElement('option');
+            option.value = style.name;
+            option.textContent = style.name;
+            styleSelect.appendChild(option);
+          });
+          const fallback = stylesList[0].name;
+          const exists = stylesList.find(s => s.name === currentStyle);
+          styleSelect.value = exists ? currentStyle : fallback;
+          const selectedStyleObj = stylesList.find(s => s.name === styleSelect.value);
+          customPromptInput.value = selectedStyleObj ? selectedStyleObj.prompt : '';
+          customPromptInput.disabled = false;
+          customPromptInput.style.opacity = '1';
+        }
+      });
       const form = document.getElementById('upload-form');
       const resultImg = document.getElementById('result-img');
       const styleDisplay = document.getElementById('style-display');
@@ -353,7 +400,6 @@
         filenameDisplay.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
       });
       const dropArea = document.getElementById('drop-area');
-
       function updateDragDropVisibility() {
         if (window.innerWidth < 768) {
           dropArea.style.display = 'none';
@@ -415,7 +461,6 @@
           cameraModal.classList.add('hidden');
         }
       }
-
       function updateToggleCameraVisibility() {
         const isMobile = window.innerWidth < 768;
         const cameraIsOpen = !cameraModal.classList.contains('hidden');
@@ -488,13 +533,11 @@
       countdownOverlay.style.display = 'none';
       cameraModal.style.position = 'relative';
       cameraModal.appendChild(countdownOverlay);
-
       function clearCountdown() {
         clearInterval(countdownInterval);
         countdownOverlay.style.display = 'none';
       }
       let retakeBtn;
-
       function createRetakeButton() {
         retakeBtn = document.createElement('button');
         retakeBtn.textContent = 'Retake';
@@ -645,11 +688,18 @@
       });
       const randomizeBtn = document.getElementById('randomize-style');
       randomizeBtn.addEventListener('click', () => {
-        if (!stylesList || stylesList.length === 0) return;
-        const randomStyle = stylesList[Math.floor(Math.random() * stylesList.length)];
-        styleSelect.value = randomStyle.name;
-        customPromptInput.value = randomStyle.prompt;
-        styleDisplay.textContent = '';
+        const selectedModel = modelSelect.value;
+        if (selectedModel === 'fofr') {
+          const randomStyle = fofrStyles[Math.floor(Math.random() * fofrStyles.length)];
+          styleSelect.value = randomStyle;
+          customPromptInput.value = `A portrait img in the style of ${randomStyle}`;
+        } else {
+          if (!stylesList || stylesList.length === 0) return;
+          const randomStyle = stylesList[Math.floor(Math.random() * stylesList.length)];
+          styleSelect.value = randomStyle.name;
+          customPromptInput.value = randomStyle.prompt;
+          styleDisplay.textContent = '';
+        }
       });
       const promptTextarea = document.getElementById('custom-prompt');
       promptTextarea.addEventListener('input', () => {
