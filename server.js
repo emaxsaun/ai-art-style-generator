@@ -177,6 +177,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 		}
 
 		console.log('File uploaded:', req.file);
+
 		const imagePath = req.file.path;
 		const filename = req.file.filename;
 		const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
@@ -195,7 +196,6 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 
 		const chosenStyle = validStyleList.includes(selectedStyle) ? selectedStyle : fallbackStyle;
 
-		// Force prompt for fofr (no customPrompt allowed)
 		const prompt = model === 'fofr' ?
 			`A portrait img in the style of ${chosenStyle}` :
 			(customPrompt && customPrompt.trim()) ? customPrompt.trim() : `A portrait img in the style of ${chosenStyle}`;
