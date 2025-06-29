@@ -177,10 +177,16 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 		}
 
         console.log('File uploaded:', req.file);
-
-		const imagePath = req.file.path;
-		const filename = req.file.filename;
-		const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
+        const sharp = require('sharp');
+        const originalPath = req.file.path;
+        const rgbPath = `${originalPath}-rgb.jpg`;
+        const filename = path.basename(rgbPath);
+        const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
+        await sharp(originalPath)
+          .toColourspace('rgb')
+          .toFile(rgbPath);
+        await fs.promises.unlink(originalPath);
+        await fs.promises.unlink(rgbPath);
 
 		const {
 			selectedStyle,
@@ -325,7 +331,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 		});
 
 		try {
-			await fs.promises.unlink(imagePath);
+			await fs.promises.unlink(rgbPath);
 			console.log('Uploaded image deleted after processing');
 		} catch (err) {
 			console.error('Failed to delete uploaded image:', err);
