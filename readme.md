@@ -32,8 +32,7 @@ A simple web app that lets users upload a photo and generates portrait art in va
 
 ### Prerequisites
 
-- Node.js v16 or higher  
-- npm or yarn  
+- Node.js v16 or higher using npm or yarn
 - A Replicate API token ([sign up here](https://replicate.com/signup))  
 
 ### Installation
@@ -47,20 +46,30 @@ cd ai-art-style-generator
 
 Install dependencies:
 
-`npm install`
+```bash
+npm install
+```
 
-Create a .env file with your Replicate API token:
+Create a `.env` file with your Replicate API token:
 
-`REPLICATE_API_TOKEN=<YOUR_ACTUAL_API_TOKEN>`
+```env
+REPLICATE_API_TOKEN=<YOUR_ACTUAL_API_TOKEN>
+```
 
 Build the project:
 
-`npm run build`
+```bash
+npm run build
+```
 
 Start the development server:
 
-`npm run dev`
+```bash
+npm run dev
+```
 
-Note: Image generation requires deployment on a public URL (e.g., Railway). It does not work on localhost.
+---
 
-Tip: When using a custom prompt with the PhotoMaker model, include the word `img`. The custom prompt is disabled for the Face to Many model.
+**Note:** Image generation requires deployment on a public URL (e.g., Railway). It does not work on localhost.
+
+**Tip:** When using a custom prompt with the PhotoMaker model, include the word `img`. The custom prompt is disabled for the Face to Many model.
