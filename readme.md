@@ -32,7 +32,7 @@ A simple web app that lets users upload a photo and generates portrait art in va
 
 ### Prerequisites
 
-- Node.js v16 or higher using npm or yarn
+- Node.js v16 or higher (using npm or yarn)
 - A Replicate API token ([sign up here](https://replicate.com/signin))
 
 ### Installation
