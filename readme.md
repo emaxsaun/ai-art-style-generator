@@ -1,6 +1,6 @@
 # Photobooth
 
-A simple web app that lets users upload a photo and generates art in various styles using the PuLID model, the PhotoMaker model, and the Face to Many model, using the Replicate API.
+A simple web app that lets users upload a photo and generates portrait art in various styles using the PuLID model, the PhotoMaker model, and the Face to Many model, using the Replicate API.
 
 Demo - https://ai-art-style-generator-production.up.railway.app/
 
