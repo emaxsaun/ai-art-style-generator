@@ -45,6 +45,8 @@ git clone https://github.com/emaxsaun/ai-art-style-generator.git
 cd ai-art-style-generator
 ```
 
+Make sure you have Node.js installed
+
 Note - Make sure to add a `.env` file with `REPLICATE_API_TOKEN=<YOUR_ACTUAL_API_TOKEN>`
 
 Note, if using a custom prompt, the word "img" must be included for the PhotoMaker model, and the custom prompt is disabled for the Face to Many model. Have fun!
