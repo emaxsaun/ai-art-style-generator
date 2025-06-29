@@ -57,4 +57,4 @@ Run `npm run dev`
 
 Note - The app needs to be deployed in order for image generation to work correctly. It fails using localhost but works on Railway.
 
-Note - If using a custom prompt, the word "img" must be included for the PhotoMaker model, and the custom prompt is disabled for the Face to Many model. Have fun!
+Note - If using a custom prompt, the word 'img' must be included for the PhotoMaker model, and the custom prompt is disabled for the Face to Many model. Have fun!
