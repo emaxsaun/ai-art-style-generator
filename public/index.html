@@ -13,7 +13,6 @@
       body {
         margin: 0;
         padding: 0;
-        min-height: 100vh;
       }
 
       body {
@@ -486,6 +485,7 @@
         }
       }
       openCameraBtn.addEventListener('click', async () => {
+        photoTaken = false;
         cameraModal.classList.remove('hidden');
         snapshotCanvas.classList.add('hidden');
         cameraStreamElem.style.display = 'block';
