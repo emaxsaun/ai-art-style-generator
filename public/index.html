@@ -245,13 +245,19 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         transition: background-color 0.3s ease, box-shadow 0.3s ease;
         resize: vertical;
-        cursor: text;
       }
 
       #custom-prompt:focus {
         background-color: #fff;
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
         outline: none;
+      }
+
+      #custom-prompt:disabled {
+        background-color: rgba(255, 255, 255, 0.5);
+        cursor: not-allowed;
+        box-shadow: 0 4px 12px rgba(255, 0, 0, 0.5) !important;
+        border: 1px solid #ff000069 !important;
       }
 
       .mirror-preview {
@@ -363,6 +369,8 @@
           });
           styleSelect.value = randomFofrStyle;
           customPromptInput.value = `A portrait img in the style of ${randomFofrStyle}`;
+          customPromptInput.disabled = true;
+          customPromptInput.style.opacity = '0.6';
         } else {
           const currentStyle = styleSelect.value;
           styleSelect.innerHTML = '';
@@ -377,6 +385,8 @@
           styleSelect.value = exists ? currentStyle : fallback;
           const selectedStyleObj = stylesList.find(s => s.name === styleSelect.value);
           customPromptInput.value = selectedStyleObj ? selectedStyleObj.prompt : '';
+          customPromptInput.disabled = false;
+          customPromptInput.style.opacity = '1';
         }
       });
       const form = document.getElementById('upload-form');
