@@ -43,23 +43,24 @@ Clone the repository:
 ```bash
 git clone https://github.com/emaxsaun/ai-art-style-generator.git
 cd ai-art-style-generator
+```
 
 Install dependencies:
 
-npm install
+`npm install`
 
 Create a .env file with your Replicate API token:
 
-REPLICATE_API_TOKEN=<YOUR_ACTUAL_API_TOKEN>
+`REPLICATE_API_TOKEN=<YOUR_ACTUAL_API_TOKEN>`
 
 Build the project:
 
-npm run build
+`npm run build`
 
 Start the development server:
 
-npm run dev
+`npm run dev`
 
 Note: Image generation requires deployment on a public URL (e.g., Railway). It does not work on localhost.
 
-Tip: When using a custom prompt with the PhotoMaker model, include the word 'img'. The custom prompt is disabled for the Face to Many model.
+Tip: When using a custom prompt with the PhotoMaker model, include the word `img`. The custom prompt is disabled for the Face to Many model.
