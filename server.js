@@ -176,7 +176,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			});
 		}
 
-		console.log('File uploaded:', req.file);
+        console.log('File uploaded:', req.file);
 
 		const imagePath = req.file.path;
 		const filename = req.file.filename;
