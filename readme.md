@@ -1,30 +1,30 @@
 # Photobooth
 
-A simple web app that lets users upload a photo and generates portrait art in various styles using the PuLID model, the PhotoMaker model, and the Face to Many model, using the Replicate API.
+A simple web app that lets users upload a photo and generates portrait art in various styles using the PuLID model, the PhotoMaker model, and the Face to Many model via the Replicate API.
 
-Demo - https://ai-art-style-generator-production.up.railway.app/
+**Demo:** https://ai-art-style-generator-production.up.railway.app/
 
 ---
 
 ## Features
 
-- Upload your own photo / Camera upload
-- Randomly applies one of many creative art styles or choose your own styles/prompt
-- Generates art based on your input image
-- Displays generated image
-- Responsive and styled frontend with a clean UI
-- Shows loading spinner during image generation
-- Handles errors gracefully
+- Upload a photo or use your camera to capture one  
+- Choose from many creative art styles or use a custom prompt  
+- Generates stylized art based on your input image  
+- Displays generated image instantly  
+- Responsive, clean, and styled frontend UI  
+- Shows loading spinner during image generation  
+- Graceful error handling  
 
 ---
 
 ## Technologies Used
 
-- Node.js & Express — backend server and API proxy
-- Multer — file upload handling
-- Axios — HTTP requests to Replicate API
-- Replicate API — Image generation
-- HTML/CSS/JavaScript — frontend UI and interactions
+- Node.js & Express — backend server and API proxy  
+- Multer — file upload handling  
+- Axios — HTTP requests to Replicate API  
+- Replicate API — image generation service  
+- HTML/CSS/JavaScript — frontend UI and interactions  
 
 ---
 
@@ -32,9 +32,9 @@ Demo - https://ai-art-style-generator-production.up.railway.app/
 
 ### Prerequisites
 
-- Node.js v16+
-- npm or yarn
-- A Replicate API token ([sign up here](https://replicate.com/signup))
+- Node.js v16 or higher  
+- npm or yarn  
+- A Replicate API token ([sign up here](https://replicate.com/signup))  
 
 ### Installation
 
@@ -43,18 +43,23 @@ Clone the repository:
 ```bash
 git clone https://github.com/emaxsaun/ai-art-style-generator.git
 cd ai-art-style-generator
-```
 
-Make sure you have Node.js installed
+Install dependencies:
 
-Run `npm install` 
+npm install
 
-Make sure to add a `.env` file with `REPLICATE_API_TOKEN=<YOUR_ACTUAL_API_TOKEN>`
+Create a .env file with your Replicate API token:
 
-Run `npm run build`
+REPLICATE_API_TOKEN=<YOUR_ACTUAL_API_TOKEN>
 
-Run `npm run dev`
+Build the project:
 
-Note - The app needs to be deployed in order for image generation to work correctly. It fails using localhost but works on Railway.
+npm run build
 
-Note - If using a custom prompt, the word 'img' must be included for the PhotoMaker model, and the custom prompt is disabled for the Face to Many model. Have fun!
+Start the development server:
+
+npm run dev
+
+Note: Image generation requires deployment on a public URL (e.g., Railway). It does not work on localhost.
+
+Tip: When using a custom prompt with the PhotoMaker model, include the word 'img'. The custom prompt is disabled for the Face to Many model.
