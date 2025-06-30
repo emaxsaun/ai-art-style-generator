@@ -77,6 +77,12 @@
         gap: 12px;
       }
 
+      #camera-stream {
+        max-width: 512px;
+        width: 100%;
+        height: auto;
+      }
+
       #camera-modal.hidden {
         display: none;
       }
@@ -115,6 +121,7 @@
         font-weight: 600;
         cursor: pointer;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        border: 1px solid #eee;
         transition: background 0.3s;
       }
 
@@ -407,6 +414,7 @@
         filenameDisplay.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
       });
       const dropArea = document.getElementById('drop-area');
+
       function updateDragDropVisibility() {
         if (window.innerWidth < 768) {
           dropArea.style.display = 'none';
@@ -415,6 +423,11 @@
         }
       }
       updateDragDropVisibility();
+      window.addEventListener('resize', () => {
+        if (!countdownOverlay.classList.contains('hidden')) {
+          positionCountdownOverlay();
+        }
+      });
       window.addEventListener('resize', updateDragDropVisibility);
       ['dragenter', 'dragover'].forEach(eventName => {
         dropArea.addEventListener(eventName, (e) => {
@@ -500,12 +513,14 @@
         countdownOverlay.style.display = 'none';
         if (retakeBtn) retakeBtn.remove();
         await startCamera();
+        positionCountdownOverlay();
         updateToggleCameraVisibility();
       });
       toggleCameraBtn.addEventListener('click', async () => {
         useFrontCamera = !useFrontCamera;
         stopCamera();
         await startCamera();
+        positionCountdownOverlay();
       });
       closeCameraBtn.addEventListener('click', () => {
         stopCamera();
@@ -578,6 +593,7 @@
           try {
             stopCamera();
             await startCamera();
+            positionCountdownOverlay();
           } catch (err) {
             console.error('Failed to restart camera:', err);
             alert('Could not access the camera. Please try again.');
@@ -586,9 +602,21 @@
           setTimeout(updateToggleCameraVisibility, 10);
         });
       }
+      function positionCountdownOverlay() {
+        const containerRect = cameraModal.getBoundingClientRect();
+        const streamRect = cameraStreamElem.getBoundingClientRect();
+        const top = streamRect.top - containerRect.top;
+        const left = streamRect.left - containerRect.left;
+        countdownOverlay.style.position = 'absolute';
+        countdownOverlay.style.top = top + 'px';
+        countdownOverlay.style.left = left + 'px';
+        countdownOverlay.style.width = streamRect.width + 'px';
+        countdownOverlay.style.height = streamRect.height + 'px';
+      }
       takePhotoBtn.addEventListener('click', () => {
         countdownNumber = 3;
         countdownOverlay.textContent = countdownNumber;
+        positionCountdownOverlay();
         countdownOverlay.style.display = 'flex';
         openCameraBtn.disabled = true;
         takePhotoBtn.style.display = 'none';
@@ -626,8 +654,10 @@
             });
             setTimeout(() => {
               cameraStreamElem.style.display = 'none';
+              toggleCameraBtn.style.display = 'none';
               snapshotCanvas.classList.remove('hidden');
               createRetakeButton();
+              setTimeout(updateToggleCameraVisibility, 50);
             }, 100);
           } else {
             countdownOverlay.textContent = countdownNumber;
