@@ -431,9 +431,13 @@
       const fileInput = document.getElementById('photo');
       const filenameDisplay = document.getElementById('filename-display');
       fileInput.addEventListener('change', () => {
-        filenameDisplay.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
         const imageUrlInput = document.getElementById('image-url');
         if (imageUrlInput) imageUrlInput.value = '';
+        if (fileInput.files && fileInput.files.length > 0) {
+          filenameDisplay.textContent = fileInput.files[0].name;
+        } else {
+          filenameDisplay.textContent = 'No file chosen';
+        }
       });
       const imageUrlInput = document.getElementById('image-url');
       imageUrlInput.addEventListener('input', () => {
@@ -589,11 +593,13 @@
       countdownOverlay.style.display = 'none';
       cameraModal.style.position = 'relative';
       cameraModal.appendChild(countdownOverlay);
+
       function clearCountdown() {
         clearInterval(countdownInterval);
         countdownOverlay.style.display = 'none';
       }
       let retakeBtn;
+
       function createRetakeButton() {
         retakeBtn = document.createElement('button');
         retakeBtn.textContent = 'Retake';
@@ -634,6 +640,7 @@
           setTimeout(updateToggleCameraVisibility, 10);
         });
       }
+
       function positionCountdownOverlay() {
         const containerRect = cameraModal.getBoundingClientRect();
         const streamRect = cameraStreamElem.getBoundingClientRect();
@@ -688,7 +695,7 @@
               const dataTransfer = new DataTransfer();
               dataTransfer.items.add(file);
               fileInput.files = dataTransfer.files;
-              filenameDisplay.textContent = file.name;
+              fileInput.dispatchEvent(new Event('change'));
               const imageUrlField = document.getElementById('image-url');
               if (imageUrlField) {
                 imageUrlField.value = '';
