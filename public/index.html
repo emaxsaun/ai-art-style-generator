@@ -419,26 +419,6 @@
       fileInput.addEventListener('change', () => {
         filenameDisplay.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
       });
-      document.addEventListener('paste', async (event) => {
-        const items = event.clipboardData?.items;
-        if (!items) return;
-
-        for (let i = 0; i < items.length; i++) {
-          const item = items[i];
-          if (item.kind === 'file' && item.type.startsWith('image/')) {
-            const file = item.getAsFile();
-            if (file) {
-              const dataTransfer = new DataTransfer();
-              dataTransfer.items.add(file);
-              fileInput.files = dataTransfer.files;
-              document.getElementById('image-url').value = '';
-              filenameDisplay.textContent = file.name || 'Pasted image';
-              document.getElementById('photo').scrollIntoView({ behavior: 'smooth' });
-              console.log('📋 Image pasted from clipboard:', file);
-            }
-          }
-        }
-      });
       const dropArea = document.getElementById('drop-area');
 
       function updateDragDropVisibility() {
@@ -794,6 +774,27 @@
         promptTextarea.style.height = 'auto';
         promptTextarea.style.height = promptTextarea.scrollHeight + 'px';
       });
+      document.addEventListener('paste', async (event) => {
+      const clipboardItems = event.clipboardData?.items;
+      if (!clipboardItems) return;
+      for (let i = 0; i < clipboardItems.length; i++) {
+        const item = clipboardItems[i];
+        if (item.kind === 'file' && item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          if (file) {
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+            const imageUrlField = document.getElementById('image-url');
+            if (imageUrlField) {
+              imageUrlField.value = '';
+            }
+            filenameDisplay.textContent = file.name || 'Pasted image';
+            console.log('📋 Image pasted from clipboard:', file);
+          }
+        }
+      }
+    });
     </script>
     <footer style="text-align: center; margin-top: 40px; color: white; font-size: 0.9rem;">
       <p>
