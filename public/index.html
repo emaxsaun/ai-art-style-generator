@@ -820,13 +820,30 @@
               const dataTransfer = new DataTransfer();
               dataTransfer.items.add(file);
               fileInput.files = dataTransfer.files;
-              const imageUrlField = document.getElementById('image-url');
-              if (imageUrlField) {
-                imageUrlField.value = '';
-              }
+              document.getElementById('image-url').value = '';
               filenameDisplay.textContent = file.name || 'Pasted image';
+              fileInput.dispatchEvent(new Event('change'));
               console.log('📋 Image pasted from clipboard:', file);
+              return;
             }
+          }
+          if (item.kind === 'string') {
+            item.getAsString((text) => {
+              if (text.startsWith('data:image/')) {
+                fetch(text).then(res => res.blob()).then(blob => {
+                  const file = new File([blob], 'pasted-image.png', {
+                    type: blob.type
+                  });
+                  const dataTransfer = new DataTransfer();
+                  dataTransfer.items.add(file);
+                  fileInput.files = dataTransfer.files;
+                  document.getElementById('image-url').value = '';
+                  filenameDisplay.textContent = file.name;
+                  fileInput.dispatchEvent(new Event('change'));
+                  console.log('📋 Base64 image pasted and converted:', file);
+                });
+              }
+            });
           }
         }
       });
