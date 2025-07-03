@@ -673,7 +673,7 @@
       });
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
-        const imageUrlField = document.getElementById('image-url-input');
+        const imageUrlField = document.getElementById('image-url');
         const imageUrlValue = imageUrlField?.value.trim();
         if ((!fileInput.files || fileInput.files.length === 0) && !imageUrlValue) {
           errorMessage.textContent = 'Please upload a file or enter an image URL before generating.';
