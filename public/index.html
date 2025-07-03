@@ -276,6 +276,20 @@
         cursor: not-allowed;
       }
 
+      #image-url {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: none;
+        font-size: 1.1rem;
+        font-weight: 600;
+        background-color: rgba(255, 255, 255, 0.9);
+        color: #333;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        margin-top: 8px;
+        box-sizing: border-box;
+      }
+
       @keyframes spin {
         to {
           transform: rotate(360deg);
@@ -309,14 +323,7 @@
         <div id="url-upload-wrapper" style="margin-top: 12px;">
           <div style="margin-bottom: 16px;">
             <label for="image-url" style="color: white;">Or enter an image URL / Paste an image:</label>
-            <input
-  type="url"
-  id="image-url"
-  name="image-url"
-  placeholder="Enter an image URL / Paste an image"
-  style="width: 100%; padding: 12px 16px; border-radius: 12px; border: none; font-size: 1.1rem;
-         font-weight: 600; background-color: rgba(255, 255, 255, 0.9); color: #333;
-         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); margin-top: 8px; box-sizing: border-box;" />
+            <input type="url" id="image-url" name="image-url" placeholder="Enter an image URL / Paste an image" />
           </div>
         </div>
         <div style="margin-bottom: 16px;">
@@ -429,15 +436,14 @@
         if (imageUrlInput) imageUrlInput.value = '';
       });
       const imageUrlInput = document.getElementById('image-url');
-imageUrlInput.addEventListener('input', () => {
-  if (imageUrlInput.value.trim()) {
-    const filename = imageUrlInput.value.trim().split('/').pop().split('?')[0];
-    filenameDisplay.textContent = filename || 'URL image selected';
-  } else {
-    filenameDisplay.textContent = 'No file chosen';
-  }
-});
-
+      imageUrlInput.addEventListener('input', () => {
+        if (imageUrlInput.value.trim()) {
+          const filename = imageUrlInput.value.trim().split('/').pop().split('?')[0];
+          filenameDisplay.textContent = filename || 'URL image selected';
+        } else {
+          filenameDisplay.textContent = 'No file chosen';
+        }
+      });
       const dropArea = document.getElementById('drop-area');
 
       function updateDragDropVisibility() {
@@ -672,16 +678,22 @@ imageUrlInput.addEventListener('input', () => {
             }
             photoTaken = true;
             snapshotCanvas.toBlob(blob => {
+              if (!blob) {
+                console.error('No blob returned from canvas.');
+                return;
+              }
               const file = new File([blob], 'captured-photo.png', {
                 type: 'image/png'
               });
-              fileInput.files = dataTransfer.files;
-              filenameDisplay.textContent = file.name;
               const dataTransfer = new DataTransfer();
               dataTransfer.items.add(file);
               fileInput.files = dataTransfer.files;
               filenameDisplay.textContent = file.name;
-            });
+              const imageUrlField = document.getElementById('image-url');
+              if (imageUrlField) {
+                imageUrlField.value = '';
+              }
+            }, 'image/png');
             setTimeout(() => {
               cameraStreamElem.style.display = 'none';
               toggleCameraBtn.style.display = 'none';
@@ -798,26 +810,26 @@ imageUrlInput.addEventListener('input', () => {
         promptTextarea.style.height = promptTextarea.scrollHeight + 'px';
       });
       document.addEventListener('paste', async (event) => {
-      const clipboardItems = event.clipboardData?.items;
-      if (!clipboardItems) return;
-      for (let i = 0; i < clipboardItems.length; i++) {
-        const item = clipboardItems[i];
-        if (item.kind === 'file' && item.type.startsWith('image/')) {
-          const file = item.getAsFile();
-          if (file) {
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            fileInput.files = dataTransfer.files;
-            const imageUrlField = document.getElementById('image-url');
-            if (imageUrlField) {
-              imageUrlField.value = '';
+        const clipboardItems = event.clipboardData?.items;
+        if (!clipboardItems) return;
+        for (let i = 0; i < clipboardItems.length; i++) {
+          const item = clipboardItems[i];
+          if (item.kind === 'file' && item.type.startsWith('image/')) {
+            const file = item.getAsFile();
+            if (file) {
+              const dataTransfer = new DataTransfer();
+              dataTransfer.items.add(file);
+              fileInput.files = dataTransfer.files;
+              const imageUrlField = document.getElementById('image-url');
+              if (imageUrlField) {
+                imageUrlField.value = '';
+              }
+              filenameDisplay.textContent = file.name || 'Pasted image';
+              console.log('📋 Image pasted from clipboard:', file);
             }
-            filenameDisplay.textContent = file.name || 'Pasted image';
-            console.log('📋 Image pasted from clipboard:', file);
           }
         }
-      }
-    });
+      });
     </script>
     <footer style="text-align: center; margin-top: 40px; color: white; font-size: 0.9rem;">
       <p>
