@@ -431,7 +431,7 @@
               const dataTransfer = new DataTransfer();
               dataTransfer.items.add(file);
               fileInput.files = dataTransfer.files;
-
+              document.getElementById('image-url').value = '';
               filenameDisplay.textContent = file.name || 'Pasted image';
               document.getElementById('photo').scrollIntoView({ behavior: 'smooth' });
               console.log('📋 Image pasted from clipboard:', file);
