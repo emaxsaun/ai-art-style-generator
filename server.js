@@ -168,33 +168,36 @@ app.get('/styles', (req, res) => {
 
 app.post('/upload', upload.single('photo'), async (req, res, next) => {
 	try {
-		if (!req.file) {
-			console.log('req.file is undefined:', req.file);
+		const sharp = require('sharp');
+		const imageUrlInput = req.body.imageUrl?.trim();
+		let imageUrl;
+		let rgbPath;
+
+		if (!req.file && !imageUrlInput) {
+			console.log('No file or image URL provided');
 			return res.status(400).json({
 				success: false,
-				error: 'No file uploaded'
+				error: 'No image provided'
 			});
 		}
 
-		console.log('File uploaded:', req.file);
-		const sharp = require('sharp');
-		const originalPath = req.file.path;
-		const rgbPath = `${originalPath}-rgb.jpg`;
-		const imageUrlInput = req.body.imageUrl?.trim();
-		let imageUrl;
-		const filename = path.basename(rgbPath);
 		if (imageUrlInput) {
 			imageUrl = imageUrlInput;
-		  } else if (filename) {
+		} else {
+			console.log('File uploaded:', req.file);
+			const originalPath = req.file.path;
+			rgbPath = `${originalPath}-rgb.jpg`;
+
+			await sharp(originalPath)
+				.toColorspace('srgb')
+				.jpeg()
+				.toFile(rgbPath);
+
+			await fs.promises.unlink(originalPath);
+
+			const filename = path.basename(rgbPath);
 			imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
-		  } else {
-			return res.status(400).json({ success: false, error: 'No image source provided.' });
-		  }
-		await sharp(originalPath)
-			.toColorspace('srgb')
-			.jpeg()
-			.toFile(rgbPath);
-		await fs.promises.unlink(originalPath);
+		}
 
 		const {
 			selectedStyle,
@@ -207,7 +210,6 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			styles[Math.floor(Math.random() * styles.length)];
 
 		const validStyleList = model === 'fofr' ? fofrStyles : styles;
-
 		const chosenStyle = validStyleList.includes(selectedStyle) ? selectedStyle : fallbackStyle;
 
 		const prompt = model === 'fofr' ?
@@ -242,7 +244,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			input = {
 				input_image: imageUrl,
 				prompt,
-				negative_prompt: negative_prompt,
+				negative_prompt,
 				style_name: '(No style)',
 				num_steps: 50,
 				style_strength_ratio: 20,
@@ -256,7 +258,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 				image: imageUrl,
 				prompt,
 				style: chosenStyle,
-				negative_prompt: negative_prompt,
+				negative_prompt,
 				denoising_strength: 0.65,
 				prompt_strength: 4.5,
 				control_depth_strength: 0.8,
@@ -269,7 +271,7 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			input = {
 				main_face_image: imageUrl,
 				prompt,
-				negative_prompt: negative_prompt,
+				negative_prompt,
 				cfg_scale: 1.2,
 				identity_scale: 0.8,
 				generation_mode: 'fidelity',
@@ -323,10 +325,6 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			attempts++;
 		}
 
-		if (!finalImage) {
-			throw new Error('Image generation timed out.');
-		}
-
 		if (!finalImage || typeof finalImage !== 'string' || !finalImage.startsWith('http')) {
 			throw new Error('Invalid final image URL received.');
 		}
@@ -337,13 +335,14 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 			imageUrl: finalImage
 		});
 
-		try {
-			await fs.promises.unlink(rgbPath);
-			console.log('Uploaded image deleted after processing');
-		} catch (err) {
-			console.error('Failed to delete uploaded image:', err);
+		if (rgbPath) {
+			try {
+				await fs.promises.unlink(rgbPath);
+				console.log('Uploaded image deleted after processing');
+			} catch (err) {
+				console.error('Failed to delete uploaded image:', err);
+			}
 		}
-
 	} catch (err) {
 		console.error('Upload handler error:', err);
 		next(err);
