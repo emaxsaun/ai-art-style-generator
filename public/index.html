@@ -433,11 +433,13 @@
       fileInput.addEventListener('change', () => {
         const imageUrlInput = document.getElementById('image-url');
         if (imageUrlInput) imageUrlInput.value = '';
-        if (fileInput.files && fileInput.files.length > 0) {
-          filenameDisplay.textContent = fileInput.files[0].name;
-        } else {
-          filenameDisplay.textContent = 'No file chosen';
-        }
+        setTimeout(() => {
+          if (fileInput.files && fileInput.files.length > 0) {
+            filenameDisplay.textContent = fileInput.files[0].name;
+          } else {
+            filenameDisplay.textContent = 'No file chosen';
+          }
+        }, 0); // microtask delay
       });
       const imageUrlInput = document.getElementById('image-url');
       imageUrlInput.addEventListener('input', () => {
