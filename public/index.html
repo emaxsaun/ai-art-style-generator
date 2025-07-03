@@ -593,13 +593,11 @@
       countdownOverlay.style.display = 'none';
       cameraModal.style.position = 'relative';
       cameraModal.appendChild(countdownOverlay);
-
       function clearCountdown() {
         clearInterval(countdownInterval);
         countdownOverlay.style.display = 'none';
       }
       let retakeBtn;
-
       function createRetakeButton() {
         retakeBtn = document.createElement('button');
         retakeBtn.textContent = 'Retake';
@@ -640,7 +638,6 @@
           setTimeout(updateToggleCameraVisibility, 10);
         });
       }
-
       function positionCountdownOverlay() {
         const containerRect = cameraModal.getBoundingClientRect();
         const streamRect = cameraStreamElem.getBoundingClientRect();
