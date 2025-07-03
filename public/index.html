@@ -307,10 +307,17 @@
           <p>Or drag and drop an image here</p>
         </div>
         <div id="url-upload-wrapper" style="margin-top: 12px;">
-          <label for="image-url" style="color: white;">Or enter an image URL:</label>
-          <input type="url" id="image-url" name="image-url" placeholder="https://example.com/image.jpg" style="width: 92%; padding: 12px 16px; border-radius: 12px; border: none; font-size: 1.1rem;
-                        font-weight: 600; background-color: rgba(255, 255, 255, 0.9); color: #333;
-                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); margin-top: 8px;" />
+          <div style="margin-bottom: 16px;">
+            <label for="image-url" style="color: white;">Or enter an image URL / Paste an image:</label>
+            <input
+  type="url"
+  id="image-url"
+  name="image-url"
+  placeholder="Enter an image URL / Paste an image"
+  style="width: 100%; padding: 12px 16px; border-radius: 12px; border: none; font-size: 1.1rem;
+         font-weight: 600; background-color: rgba(255, 255, 255, 0.9); color: #333;
+         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); margin-top: 8px; box-sizing: border-box;" />
+          </div>
         </div>
         <div style="margin-bottom: 16px;">
           <div>
@@ -418,7 +425,19 @@
       const filenameDisplay = document.getElementById('filename-display');
       fileInput.addEventListener('change', () => {
         filenameDisplay.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
+        const imageUrlInput = document.getElementById('image-url');
+        if (imageUrlInput) imageUrlInput.value = '';
       });
+      const imageUrlInput = document.getElementById('image-url');
+imageUrlInput.addEventListener('input', () => {
+  if (imageUrlInput.value.trim()) {
+    const filename = imageUrlInput.value.trim().split('/').pop().split('?')[0];
+    filenameDisplay.textContent = filename || 'URL image selected';
+  } else {
+    filenameDisplay.textContent = 'No file chosen';
+  }
+});
+
       const dropArea = document.getElementById('drop-area');
 
       function updateDragDropVisibility() {
@@ -621,6 +640,8 @@
         countdownOverlay.style.height = streamRect.height + 'px';
       }
       takePhotoBtn.addEventListener('click', () => {
+        const imageUrlInput = document.getElementById('image-url');
+        if (imageUrlInput) imageUrlInput.value = '';
         countdownNumber = 3;
         countdownOverlay.textContent = countdownNumber;
         positionCountdownOverlay();
@@ -654,6 +675,8 @@
               const file = new File([blob], 'captured-photo.png', {
                 type: 'image/png'
               });
+              fileInput.files = dataTransfer.files;
+              filenameDisplay.textContent = file.name;
               const dataTransfer = new DataTransfer();
               dataTransfer.items.add(file);
               fileInput.files = dataTransfer.files;
