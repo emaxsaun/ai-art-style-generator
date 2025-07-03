@@ -439,7 +439,7 @@
           } else {
             filenameDisplay.textContent = 'No file chosen';
           }
-        }, 0); // microtask delay
+        }, 0);
       });
       const imageUrlInput = document.getElementById('image-url');
       imageUrlInput.addEventListener('input', () => {
@@ -451,7 +451,6 @@
         }
       });
       const dropArea = document.getElementById('drop-area');
-
       function updateDragDropVisibility() {
         if (window.innerWidth < 768) {
           dropArea.style.display = 'none';
@@ -518,7 +517,6 @@
           cameraModal.classList.add('hidden');
         }
       }
-
       function updateToggleCameraVisibility() {
         const isMobile = window.innerWidth < 768;
         const cameraIsOpen = !cameraModal.classList.contains('hidden');
@@ -530,7 +528,6 @@
       }
       updateToggleCameraVisibility();
       window.addEventListener('resize', updateToggleCameraVisibility);
-
       function stopCamera() {
         if (cameraStream) {
           cameraStream.getTracks().forEach(track => track.stop());
