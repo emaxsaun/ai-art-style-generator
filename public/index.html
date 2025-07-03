@@ -306,6 +306,12 @@
         <div id="drop-area">
           <p>Or drag and drop an image here</p>
         </div>
+        <div id="url-upload-wrapper" style="margin-top: 12px;">
+          <label for="image-url" style="color: white;">Or enter an image URL:</label>
+          <input type="url" id="image-url" name="image-url" placeholder="https://example.com/image.jpg" style="width: 92%; padding: 12px 16px; border-radius: 12px; border: none; font-size: 1.1rem;
+                        font-weight: 600; background-color: rgba(255, 255, 255, 0.9); color: #333;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); margin-top: 8px;" />
+        </div>
         <div style="margin-bottom: 16px;">
           <div>
             <label for="model-select" style="color: white;">Choose a model:</label>
@@ -481,6 +487,7 @@
           cameraModal.classList.add('hidden');
         }
       }
+
       function updateToggleCameraVisibility() {
         const isMobile = window.innerWidth < 768;
         const cameraIsOpen = !cameraModal.classList.contains('hidden');
@@ -557,11 +564,13 @@
       countdownOverlay.style.display = 'none';
       cameraModal.style.position = 'relative';
       cameraModal.appendChild(countdownOverlay);
+
       function clearCountdown() {
         clearInterval(countdownInterval);
         countdownOverlay.style.display = 'none';
       }
       let retakeBtn;
+
       function createRetakeButton() {
         retakeBtn = document.createElement('button');
         retakeBtn.textContent = 'Retake';
@@ -602,6 +611,7 @@
           setTimeout(updateToggleCameraVisibility, 10);
         });
       }
+
       function positionCountdownOverlay() {
         const containerRect = cameraModal.getBoundingClientRect();
         const streamRect = cameraStreamElem.getBoundingClientRect();
@@ -692,7 +702,12 @@
           if (progress >= 100) clearInterval(progressInterval);
         }, 200);
         const formData = new FormData();
-        formData.append('photo', fileInput.files[0]);
+        const imageUrlInput = document.getElementById('image-url').value.trim();
+        if (imageUrlInput) {
+          formData.append('imageUrl', imageUrlInput);
+        } else {
+          formData.append('photo', fileInput.files[0]);
+        }
         formData.append('selectedStyle', styleSelect.value);
         formData.append('customPrompt', customPromptInput.value);
         formData.append('model', document.getElementById('model-select').value);

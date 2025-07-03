@@ -180,8 +180,16 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 		const sharp = require('sharp');
 		const originalPath = req.file.path;
 		const rgbPath = `${originalPath}-rgb.jpg`;
+		const imageUrlInput = req.body.imageUrl?.trim();
+		let imageUrl;
 		const filename = path.basename(rgbPath);
-		const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
+		if (imageUrlInput) {
+			imageUrl = imageUrlInput;
+		  } else if (filename) {
+			imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
+		  } else {
+			return res.status(400).json({ success: false, error: 'No image source provided.' });
+		  }
 		await sharp(originalPath)
 			.toColorspace('srgb')
 			.jpeg()
