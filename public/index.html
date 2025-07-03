@@ -419,6 +419,26 @@
       fileInput.addEventListener('change', () => {
         filenameDisplay.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
       });
+      document.addEventListener('paste', async (event) => {
+        const items = event.clipboardData?.items;
+        if (!items) return;
+
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          if (item.kind === 'file' && item.type.startsWith('image/')) {
+            const file = item.getAsFile();
+            if (file) {
+              const dataTransfer = new DataTransfer();
+              dataTransfer.items.add(file);
+              fileInput.files = dataTransfer.files;
+
+              filenameDisplay.textContent = file.name || 'Pasted image';
+              document.getElementById('photo').scrollIntoView({ behavior: 'smooth' });
+              console.log('📋 Image pasted from clipboard:', file);
+            }
+          }
+        }
+      });
       const dropArea = document.getElementById('drop-area');
 
       function updateDragDropVisibility() {
