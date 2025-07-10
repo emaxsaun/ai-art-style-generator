@@ -5,7 +5,7 @@
   "scripts": {
     "build": "node build.js",
     "start": "node dist/server.js",
-    "dev": "nodemon --watch server.js --watch public/index.html server.js",
+    "dev": "nodemon",
     "postinstall": "npm run build"
   },
   "keywords": [],
