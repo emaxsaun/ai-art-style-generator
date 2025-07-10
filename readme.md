@@ -16,6 +16,7 @@ A simple web app that lets users upload photos and generate portrait art in vari
 - Shows loading spinner during image generation
 - Graceful error handling
 - Download button
+- Image generation works on localhost
 
 ---
 
