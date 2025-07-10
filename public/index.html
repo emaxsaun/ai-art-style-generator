@@ -714,6 +714,8 @@
       });
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
+        const downloadBtn = document.getElementById('download-btn');
+        downloadBtn.style.display = 'none';
         const imageUrlField = document.getElementById('image-url');
         const imageUrlValue = imageUrlField?.value.trim();
         if ((!fileInput.files || fileInput.files.length === 0) && !imageUrlValue) {
@@ -726,7 +728,6 @@
         styleDisplay.textContent = '';
         resultImg.style.display = 'none';
         loadingSpinner.style.display = 'inline-block';
-        downloadBtn.style.display = 'none';
         const progressBar = document.getElementById('progress-bar');
         const progressText = document.getElementById('progress-text');
         progressBar.style.display = 'block';
@@ -768,7 +769,6 @@
             styleDisplay.textContent = `Style applied: ${data.message.replace('Image processed in ', '')}`;
             resultImg.src = data.imageUrl;
             resultImg.style.display = 'block';
-            const downloadBtn = document.getElementById('download-btn');
             if (typeof data.imageUrl === 'string' && data.imageUrl.trim().length > 0) {
               resultImg.src = data.imageUrl;
               resultImg.style.display = 'block';
