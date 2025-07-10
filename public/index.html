@@ -770,13 +770,23 @@
               resultImg.src = data.imageUrl;
               resultImg.style.display = 'block';
               downloadBtn.style.display = 'inline-block';
-              downloadBtn.onclick = () => {
-                const link = document.createElement('a');
-                link.href = data.imageUrl;
-                link.download = `styled-image-${Date.now()}.jpg`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+              downloadBtn.onclick = async () => {
+                try {
+                  const response = await fetch(resultImg.src, {
+                    mode: 'cors'
+                  });
+                  const blob = await response.blob();
+                  const blobUrl = URL.createObjectURL(blob);
+                  const link = document.createElement('a');
+                  link.href = blobUrl;
+                  link.download = `styled-image-${Date.now()}.jpg`;
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                  URL.revokeObjectURL(blobUrl);
+                } catch (err) {
+                  console.error('Failed to download image:', err);
+                }
               };
             } else {
               downloadBtn.style.display = 'none';
