@@ -186,21 +186,29 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 
 		if (imageUrlInput) {
 			imageUrl = imageUrlInput;
-		} else {
+		  } else {
 			console.log('File uploaded:', req.file);
 			const originalPath = req.file.path;
 			rgbPath = `${originalPath}-rgb.jpg`;
-
+		  
 			await sharp(originalPath)
-				.toColorspace('srgb')
-				.jpeg()
-				.toFile(rgbPath);
-
+			  .toColorspace('srgb')
+			  .jpeg()
+			  .toFile(rgbPath);
+		  
 			await fs.promises.unlink(originalPath);
-
-			const filename = path.basename(rgbPath);
-			imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
-		}
+		  
+			const isLocal = req.get('host').includes('localhost') || req.hostname === '127.0.0.1';
+		  
+			if (isLocal) {
+			  const buffer = await fs.promises.readFile(rgbPath);
+			  const base64 = buffer.toString('base64');
+			  imageUrl = `data:image/jpeg;base64,${base64}`;
+			} else {
+			  const filename = path.basename(rgbPath);
+			  imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
+			}
+		  }		  
 
 		const {
 			selectedStyle,
