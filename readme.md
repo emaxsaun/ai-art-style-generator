@@ -2,7 +2,7 @@
 
 A simple web app that lets users upload photos and generate portrait art in various styles using the PuLID model, the PhotoMaker model, and the Face to Many model, using the Replicate API.
 
-**Demo:** https://ai-art-style-generator.onrender.com/
+**Demo:** https://ai-art-style-generator.onrender.com/ 
 
 ---
 
