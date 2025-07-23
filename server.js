@@ -19,6 +19,7 @@ const styles = [
 	'90s Grunge Graphic',
 	'Afrofuturism Vision',
 	'Acrylic',
+	'Andy Warhol',
 	'Art Deco Luxe',
 	'Art Nouveau Flourish',
 	'Barbiecore Glam Pop',
@@ -87,6 +88,7 @@ const styles = [
 	'Pop Art Portrait',
 	'Post-apocalyptic Wasteland',
 	'Realistic',
+	'Rembrandt',
 	'Renaissance Portrait',
 	'Retro',
 	'Retro Pixel Portrait',
@@ -164,7 +166,7 @@ app.get('/', (req, res) => {
 app.get('/styles', (req, res) => {
 	const stylesWithPrompts = styles.map(name => ({
 		name,
-		prompt: `A portrait img in the style of ${name}`
+		prompt: `A portrait image in the style of ${name}`
 	}));
 	res.json(stylesWithPrompts);
 });
@@ -225,9 +227,12 @@ app.post('/upload', upload.single('photo'), async (req, res, next) => {
 		const validStyleList = model === 'fofr' ? fofrStyles : styles;
 		const chosenStyle = validStyleList.includes(selectedStyle) ? selectedStyle : fallbackStyle;
 
+		const isPhotomaker = model === 'photomaker';
 		const prompt = model === 'fofr' ?
-			`A portrait img in the style of ${chosenStyle}` :
-			(customPrompt && customPrompt.trim()) ? customPrompt.trim() : `A portrait img in the style of ${chosenStyle}`;
+			`A portrait image in the style of ${chosenStyle}` :
+			(customPrompt && customPrompt.trim()) ?
+			customPrompt.trim() :
+			`A portrait ${isPhotomaker ? 'img' : 'image'} in the style of ${chosenStyle}`;
 
 		const negative_prompt = 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, flaws in the eyes, flaws in the face, flaws, non-HDRi, artifacts noise, glitch, deformed, mutated, ugly, disfigured, hands, low resolution, partially rendered objects, deformed or partially rendered eyes, deformed eyeballs, cross-eyed';
 

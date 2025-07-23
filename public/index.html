@@ -36,12 +36,10 @@
       h1 {
         font-weight: 600;
         font-size: 2.5rem;
-        margin-bottom: 25px;
         text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
       }
 
       form {
-        margin-bottom: 30px;
         font-weight: bold;
       }
 
@@ -345,15 +343,13 @@
             <div style="font-size: 14px; text-transform: uppercase;">Note - The custom prompt is disabled for the Face to Many model</div>
           </label>
           <textarea id="custom-prompt" name="prompt" rows="4" style="width: 97%; padding: 8px; border-radius: 8px; border: none; margin-bottom: 24px;"></textarea>
-          <button id="randomize-style" type="button" style="background: #4caf50; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.6);"> 🔀 Randomize Style </button>
+          <button id="randomize-style" type="button" style="background: #4caf50; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.6);">🔀 Randomize Style</button>
         </div>
         <button type="submit" style="width: 250px;">Generate Photo</button>
       </form>
       <div id="style-display"></div>
       <img id="result-img" alt="Generated Photo" />
-      <button id="download-btn" style="display: none; margin-top: 12px;">
-        ⬇️ Download Image
-      </button>
+      <button id="download-btn" style="display: none; margin-top: 12px;">⬇️ Download Image</button>
       <div id="loading-spinner"></div>
       <progress id="progress-bar" value="0" max="100" style="width: 100%; display: none;"></progress>
       <div id="progress-text" style="color: white; font-weight: bold; margin-top: 8px; display: none;">0%</div>
@@ -368,48 +364,80 @@
         const res = await fetch('/styles');
         const styles = await res.json();
         stylesList = styles;
-        const randomStyle = styles[Math.floor(Math.random() * styles.length)];
-        const randomPrompt = randomStyle.prompt;
-        styles.forEach(style => {
-          const option = document.createElement('option');
-          option.value = style.name;
-          option.textContent = style.name;
-          styleSelect.appendChild(option);
-        });
-        styleSelect.value = randomStyle.name;
-        customPromptInput.value = randomPrompt;
-        styleSelect.addEventListener('change', () => {
-          const selectedModel = modelSelect.value;
-          const selectedName = styleSelect.value;
-          if (selectedModel === 'fofr') {
-            customPromptInput.value = `A portrait img in the style of ${selectedName}`;
-          }
-          const selectedStyle = styles.find(s => s.name === selectedName);
-          if (selectedStyle) {
-            customPromptInput.value = selectedStyle.prompt;
-          }
-        });
-      }
-      initializeStyles();
-      const fofrStyles = ['3D', 'Emoji', 'Video game', 'Pixels', 'Clay', 'Toy'];
-      const modelSelect = document.getElementById('model-select');
-      modelSelect.addEventListener('change', () => {
         const selectedModel = modelSelect.value;
+        const previouslySelected = styleSelect.value;
+        styleSelect.innerHTML = '';
         if (selectedModel === 'fofr') {
-          const randomFofrStyle = fofrStyles[Math.floor(Math.random() * fofrStyles.length)];
-          styleSelect.innerHTML = '';
           fofrStyles.forEach(style => {
             const option = document.createElement('option');
             option.value = style;
             option.textContent = style;
             styleSelect.appendChild(option);
           });
-          styleSelect.value = randomFofrStyle;
-          customPromptInput.value = `A portrait img in the style of ${randomFofrStyle}`;
+          const defaultStyle = fofrStyles.includes(previouslySelected) ? previouslySelected : fofrStyles[Math.floor(Math.random() * fofrStyles.length)];
+          styleSelect.value = defaultStyle;
+          customPromptInput.value = `A portrait image in the style of ${styleSelect.value}`;
           customPromptInput.disabled = true;
           customPromptInput.style.opacity = '0.6';
         } else {
-          const currentStyle = styleSelect.value;
+          styles.forEach(style => {
+            const option = document.createElement('option');
+            option.value = style.name;
+            option.textContent = style.name;
+            styleSelect.appendChild(option);
+          });
+          const validStyle = styles.find(s => s.name === previouslySelected);
+          const randomStyle = styles[Math.floor(Math.random() * styles.length)];
+          const defaultStyle = validStyle ? validStyle.name : randomStyle.name;
+          styleSelect.value = defaultStyle;
+          const word = selectedModel === 'photomaker' ? 'img' : 'image';
+          const defaultPrompt = `A portrait ${word} in the style of ${styleSelect.value}`;
+          customPromptInput.value = defaultPrompt;
+          customPromptInput.disabled = false;
+          customPromptInput.style.opacity = '1';
+        }
+      }
+      initializeStyles();
+      const fofrStyles = ['3D', 'Emoji', 'Video game', 'Pixels', 'Clay', 'Toy'];
+      const modelSelect = document.getElementById('model-select');
+      modelSelect.addEventListener('change', () => {
+        const selectedModel = modelSelect.value;
+        const selectedStyleName = styleSelect.value;
+        if (selectedModel === 'fofr') {
+          styleSelect.innerHTML = '';
+          const selectedModel = modelSelect.value;
+          styleSelect.innerHTML = '';
+          if (selectedModel === 'fofr') {
+            fofrStyles.forEach(style => {
+              const option = document.createElement('option');
+              option.value = style;
+              option.textContent = style;
+              styleSelect.appendChild(option);
+            });
+            const randomFofrStyle = fofrStyles[Math.floor(Math.random() * fofrStyles.length)];
+            styleSelect.value = randomFofrStyle;
+            customPromptInput.value = `A portrait img in the style of ${randomFofrStyle}`;
+            customPromptInput.disabled = true;
+            customPromptInput.style.opacity = '0.6';
+          } else {
+            styles.forEach(style => {
+              const option = document.createElement('option');
+              option.value = style.name;
+              option.textContent = style.name;
+              styleSelect.appendChild(option);
+            });
+            const randomStyle = styles[Math.floor(Math.random() * styles.length)];
+            styleSelect.value = randomStyle.name;
+            customPromptInput.value = randomStyle.prompt;
+            customPromptInput.disabled = false;
+            customPromptInput.style.opacity = '1';
+          }
+          const randomFofrStyle = fofrStyles[Math.floor(Math.random() * fofrStyles.length)];
+          styleSelect.value = randomFofrStyle;
+          customPromptInput.value = `A portrait image in the style of ${randomFofrStyle}`;
+          customPromptInput.disabled = true;
+          customPromptInput.style.opacity = '0.6';
+        } else {
           styleSelect.innerHTML = '';
           stylesList.forEach(style => {
             const option = document.createElement('option');
@@ -418,12 +446,21 @@
             styleSelect.appendChild(option);
           });
           const fallback = stylesList[0].name;
-          const exists = stylesList.find(s => s.name === currentStyle);
-          styleSelect.value = exists ? currentStyle : fallback;
-          const selectedStyleObj = stylesList.find(s => s.name === styleSelect.value);
-          customPromptInput.value = selectedStyleObj ? selectedStyleObj.prompt : '';
+          const exists = stylesList.find(s => s.name === selectedStyleName);
+          styleSelect.value = exists ? selectedStyleName : fallback;
+          const word = selectedModel === 'photomaker' ? 'img' : 'image';
+          customPromptInput.value = `A portrait ${word} in the style of ${styleSelect.value}`;
           customPromptInput.disabled = false;
           customPromptInput.style.opacity = '1';
+        }
+      });
+      styleSelect.addEventListener('change', () => {
+        const selectedModel = modelSelect.value;
+        const word = selectedModel === 'photomaker' ? 'img' : 'image';
+        if (selectedModel === 'fofr') {
+          customPromptInput.value = `A portrait image in the style of ${styleSelect.value}`;
+        } else {
+          customPromptInput.value = `A portrait ${word} in the style of ${styleSelect.value}`;
         }
       });
       const form = document.getElementById('upload-form');
@@ -794,15 +831,19 @@
             } else {
               downloadBtn.style.display = 'none';
             }
-            const chosenStyleName = data.message.replace('Image processed in ', '');
-            const defaultPromptForStyleObj = stylesList.find(s => s.name === chosenStyleName);
-            const defaultPromptForStyle = defaultPromptForStyleObj ? defaultPromptForStyleObj.prompt : '';
+            const selectedStyleName = document.getElementById('style-select').value;
+            const selectedStyle = stylesList.find(s => s.name === selectedStyleName);
+            const defaultPromptForStyle = selectedStyle?.prompt?.trim() ?? '';
             const userPrompt = customPromptInput.value.trim();
-            if (userPrompt && userPrompt !== defaultPromptForStyle) {
-              styleDisplay.textContent = `Custom prompt applied`;
+            const model = document.getElementById('model-select').value;
+            const normalize = str => str.trim().toLowerCase().replace(/\bimg\b/g, 'image').replace(/\s+/g, ' ').replace(/[.,;:!?]+$/, '');
+            let isCustomPrompt = false;
+            if (model === 'fofr') {
+              isCustomPrompt = false;
             } else {
-              styleDisplay.textContent = `Style applied: ${chosenStyleName}`;
+              isCustomPrompt = normalize(userPrompt) !== normalize(defaultPromptForStyle);
             }
+            styleDisplay.textContent = isCustomPrompt ? `Custom prompt applied` : `Style applied: ${selectedStyleName}`;
           } else {
             console.error('Invalid imageUrl:', data.imageUrl);
             errorMessage.textContent = 'Received invalid image URL.';
@@ -824,12 +865,16 @@
         if (selectedModel === 'fofr') {
           const randomStyle = fofrStyles[Math.floor(Math.random() * fofrStyles.length)];
           styleSelect.value = randomStyle;
-          customPromptInput.value = `A portrait img in the style of ${randomStyle}`;
+          customPromptInput.value = `A portrait image in the style of ${randomStyle}`;
         } else {
           if (!stylesList || stylesList.length === 0) return;
           const randomStyle = stylesList[Math.floor(Math.random() * stylesList.length)];
           styleSelect.value = randomStyle.name;
-          customPromptInput.value = randomStyle.prompt;
+          let prompt = randomStyle.prompt;
+          if (selectedModel === 'photomaker') {
+            prompt = prompt.replace(/\bimage\b/g, 'img');
+          }
+          customPromptInput.value = prompt;
           styleDisplay.textContent = '';
         }
       });
