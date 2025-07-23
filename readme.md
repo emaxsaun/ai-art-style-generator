@@ -39,32 +39,32 @@ A simple web app that lets users upload photos and generate portrait art in vari
 
 ### Installation
 
-Clone the repository:
+Clone the repository
 
 ```bash
 git clone https://github.com/emaxsaun/ai-art-style-generator.git
 cd ai-art-style-generator
 ```
 
-Install dependencies:
+Install dependencies
 
 ```bash
 npm install
 ```
 
-Create a `.env` file with your Replicate API token:
+Create a `.env` file with your Replicate API token
 
 ```env
 REPLICATE_API_TOKEN=<YOUR_ACTUAL_API_TOKEN>
 ```
 
-Build the project:
+Build the project
 
 ```bash
 npm run build
 ```
 
-Start the development server:
+Start the development server
 
 ```bash
 npm run dev
@@ -72,4 +72,4 @@ npm run dev
 
 ---
 
-**Tips:** When using a custom prompt with the PhotoMaker model, the word `img` must be included. The custom prompt is disabled for the Face to Many model.
+**Tips** When using a custom prompt with the PhotoMaker model, the word `img` must be included. The custom prompt is disabled for the Face to Many model.
