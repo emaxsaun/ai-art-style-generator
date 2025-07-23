@@ -72,4 +72,4 @@ npm run dev
 
 ---
 
-**Tip:** When using a custom prompt with the PhotoMaker model, the word `img` must be included. The custom prompt is disabled for the Face to Many model.
+**Tips:** When using a custom prompt with the PhotoMaker model, the word `img` must be included. The custom prompt is disabled for the Face to Many model.
