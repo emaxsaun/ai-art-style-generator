@@ -361,7 +361,7 @@
       const styleSelect = document.getElementById('style-select');
       const customPromptInput = document.getElementById('custom-prompt');
       async function initializeStyles() {
-        const res = await fetch('/styles');
+        const res = await fetch('/api/styles');
         const styles = await res.json();
         stylesList = styles;
         const selectedModel = modelSelect.value;
@@ -791,7 +791,7 @@
         formData.append('customPrompt', customPromptInput.value);
         formData.append('model', document.getElementById('model-select').value);
         try {
-          const response = await fetch('/upload', {
+          const response = await fetch('/api/upload', {
             method: 'POST',
             body: formData
           });
