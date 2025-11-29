@@ -157,7 +157,7 @@ async function createCollage(req, res, next) {
                 responseType: 'arraybuffer'
             });
             return sharp(response.data)
-                .resize(1024, 1024)
+                .resize(1024, 1024, {fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 1}})
                 .toBuffer();
         }));
 
