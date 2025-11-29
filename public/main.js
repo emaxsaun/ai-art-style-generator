@@ -101,6 +101,8 @@ let photoTaken = false;
       collageBtn.addEventListener('click', async () => {
           const downloadBtn = document.getElementById('download-btn');
           downloadBtn.style.display = 'none';
+          const shareButtons = document.getElementById('share-buttons');
+          shareButtons.style.display = 'none';
 
           if (!fileInput.files || fileInput.files.length === 0) {
               errorMessage.textContent = 'Please upload a file before generating a collage.';
