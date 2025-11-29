@@ -1,4 +1,5 @@
 let photoTaken = false;
+      const shutterSound = new Audio('shutter.wav');
       let stylesList = [];
       const styleSelect = document.getElementById('style-select');
       const customPromptInput = document.getElementById('custom-prompt');
@@ -392,6 +393,7 @@ let photoTaken = false;
           countdownNumber--;
           if (countdownNumber === 0) {
             clearCountdown();
+            shutterSound.play();
             openCameraBtn.disabled = false;
             const MAX_WIDTH = 512;
             const originalWidth = cameraStreamElem.videoWidth;
