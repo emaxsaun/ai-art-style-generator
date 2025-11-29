@@ -100,50 +100,75 @@ let photoTaken = false;
 
       const collageBtn = document.getElementById('generate-collage');
       collageBtn.addEventListener('click', async () => {
-          const downloadBtn = document.getElementById('download-btn');
-          downloadBtn.style.display = 'none';
-          const shareButtons = document.getElementById('share-buttons');
-          shareButtons.style.display = 'none';
-
-          if (!fileInput.files || fileInput.files.length === 0) {
-              errorMessage.textContent = 'Please upload a file before generating a collage.';
-              errorMessage.style.display = 'block';
-              return;
-          }
-
-          errorMessage.style.display = 'none';
-          styleDisplay.textContent = '';
-          resultImg.style.display = 'none';
-          loadingSpinner.style.display = 'inline-block';
-
-          const formData = new FormData();
-          formData.append('photo', fileInput.files[0]);
-
-          try {
-              const response = await fetch('/api/collage', {
-                  method: 'POST',
-                  body: formData
-              });
-
-              const data = await response.json();
-              loadingSpinner.style.display = 'none';
-
-              if (data.success) {
-                  resultImg.src = data.imageUrl;
-                  resultImg.style.display = 'block';
-                  styleDisplay.textContent = 'Collage generated!';
-                  downloadBtn.style.display = 'inline-block';
-              } else {
-                  errorMessage.textContent = data.error || 'An error occurred during collage generation.';
-                  errorMessage.style.display = 'block';
-              }
-          } catch (err) {
-              loadingSpinner.style.display = 'none';
-              errorMessage.textContent = 'An error occurred. Please try again.';
-              errorMessage.style.display = 'block';
-              console.error(err);
-          }
-      });
+        const downloadBtn = document.getElementById('download-btn');
+        downloadBtn.style.display = 'none';
+        const shareButtons = document.getElementById('share-buttons');
+        shareButtons.style.display = 'none';
+    
+        if (!fileInput.files || fileInput.files.length === 0) {
+            errorMessage.textContent = 'Please upload a file before generating a collage.';
+            errorMessage.style.display = 'block';
+            return;
+        }
+    
+        errorMessage.style.display = 'none';
+        styleDisplay.textContent = '';
+        resultImg.style.display = 'none';
+        loadingSpinner.style.display = 'inline-block';
+    
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        progressBar.style.display = 'block';
+        progressText.style.display = 'block';
+        progressBar.value = 0;
+        progressText.textContent = '0%';
+    
+        const estimatedTime = 10000;
+        const startTime = Date.now();
+        const progressInterval = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(100, Math.floor((elapsed / estimatedTime) * 100));
+            progressBar.value = progress;
+            progressText.textContent = `${progress}%`;
+            if (progress >= 100) clearInterval(progressInterval);
+        }, 200);
+    
+        const formData = new FormData();
+        formData.append('photo', fileInput.files[0]);
+    
+        try {
+            const response = await fetch('/api/collage', {
+                method: 'POST',
+                body: formData
+            });
+    
+            const data = await response.json();
+            
+            loadingSpinner.style.display = 'none';
+            clearInterval(progressInterval);
+            progressBar.style.display = 'none';
+            progressText.style.display = 'none';
+    
+            if (data.success) {
+                resultImg.src = data.imageUrl;
+                resultImg.style.display = 'block';
+                styleDisplay.textContent = 'Collage generated!';
+                downloadBtn.style.display = 'inline-block';
+            } else {
+                errorMessage.textContent = data.error || 'An error occurred during collage generation.';
+                errorMessage.style.display = 'block';
+            }
+        } catch (err) {
+            loadingSpinner.style.display = 'none';
+            clearInterval(progressInterval);
+            progressBar.style.display = 'none';
+            progressText.style.display = 'none';
+            
+            errorMessage.textContent = 'An error occurred. Please try again.';
+            errorMessage.style.display = 'block';
+            console.error(err);
+        }
+    });
       styleSelect.addEventListener('change', () => {
         const selectedModel = modelSelect.value;
         const word = selectedModel === 'photomaker' ? 'img' : 'image';
