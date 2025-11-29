@@ -2,6 +2,7 @@ const esbuild = require('esbuild');
 const fs = require('fs');
 const path = require('path');
 const { minify } = require('html-minifier-terser');
+const CleanCSS = require('clean-css');
 
 async function bundleServer() {
   try {
@@ -52,9 +53,60 @@ async function minifyHTMLFile() {
   }
 }
 
+async function minifyCSSFile() {
+    const cssPath = path.join(__dirname, 'public', 'style.css');
+    const distDir = path.join(__dirname, 'public', 'dist');
+    const distCssPath = path.join(distDir, 'style.css');
+
+    if (!fs.existsSync(cssPath)) {
+      console.warn(`⚠️ Could not find ${cssPath}`);
+      return;
+    }
+
+    try {
+      const css = fs.readFileSync(cssPath, 'utf8');
+      const minifiedCSS = new CleanCSS().minify(css).styles;
+
+      fs.mkdirSync(distDir, { recursive: true });
+      fs.writeFileSync(distCssPath, minifiedCSS);
+
+      console.log('✅ Minified style.css written to public/dist/style.css');
+    } catch (err) {
+      console.error('❌ Failed to minify CSS:', err);
+      process.exit(1);
+    }
+  }
+
+  async function minifyJSFile() {
+      const jsPath = path.join(__dirname, 'public', 'main.js');
+      const distDir = path.join(__dirname, 'public', 'dist');
+      const distJsPath = path.join(distDir, 'main.js');
+
+      if (!fs.existsSync(jsPath)) {
+          console.warn(`⚠️ Could not find ${jsPath}`);
+          return;
+      }
+
+      try {
+          await esbuild.build({
+              entryPoints: [jsPath],
+              bundle: true,
+              minify: true,
+              sourcemap: false,
+              outfile: distJsPath,
+          });
+          console.log('✅ Minified main.js written to public/dist/main.js');
+      } catch (err) {
+          console.error('❌ Failed to minify JS:', err);
+          process.exit(1);
+      }
+  }
+
 async function build() {
   await bundleServer();
   await minifyHTMLFile();
+  await minifyCSSFile();
+  await minifyJSFile();
 }
 
 build();
