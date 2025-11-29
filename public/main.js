@@ -506,7 +506,7 @@ let photoTaken = false;
               shareButtons.style.display = 'block';
 
               const imageUrl = encodeURIComponent(data.imageUrl);
-              document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?url=${imageUrl}&text=Check out my AI-generated art!`;
+              document.getElementById('share-x').href = `https://x.com/intent/tweet?url=${imageUrl}&text=Check out my AI-generated art!`;
               document.getElementById('share-facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${imageUrl}`;
               document.getElementById('share-pinterest').href = `https://pinterest.com/pin/create/button/?url=${imageUrl}&media=${imageUrl}&description=AI-generated art`;
 
