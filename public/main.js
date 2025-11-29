@@ -96,6 +96,51 @@ let photoTaken = false;
           customPromptInput.style.opacity = '1';
         }
       });
+
+      const collageBtn = document.getElementById('generate-collage');
+      collageBtn.addEventListener('click', async () => {
+          const downloadBtn = document.getElementById('download-btn');
+          downloadBtn.style.display = 'none';
+
+          if (!fileInput.files || fileInput.files.length === 0) {
+              errorMessage.textContent = 'Please upload a file before generating a collage.';
+              errorMessage.style.display = 'block';
+              return;
+          }
+
+          errorMessage.style.display = 'none';
+          styleDisplay.textContent = '';
+          resultImg.style.display = 'none';
+          loadingSpinner.style.display = 'inline-block';
+
+          const formData = new FormData();
+          formData.append('photo', fileInput.files[0]);
+
+          try {
+              const response = await fetch('/api/collage', {
+                  method: 'POST',
+                  body: formData
+              });
+
+              const data = await response.json();
+              loadingSpinner.style.display = 'none';
+
+              if (data.success) {
+                  resultImg.src = data.imageUrl;
+                  resultImg.style.display = 'block';
+                  styleDisplay.textContent = 'Collage generated!';
+                  downloadBtn.style.display = 'inline-block';
+              } else {
+                  errorMessage.textContent = data.error || 'An error occurred during collage generation.';
+                  errorMessage.style.display = 'block';
+              }
+          } catch (err) {
+              loadingSpinner.style.display = 'none';
+              errorMessage.textContent = 'An error occurred. Please try again.';
+              errorMessage.style.display = 'block';
+              console.error(err);
+          }
+      });
       styleSelect.addEventListener('change', () => {
         const selectedModel = modelSelect.value;
         const word = selectedModel === 'photomaker' ? 'img' : 'image';
@@ -395,6 +440,8 @@ let photoTaken = false;
         event.preventDefault();
         const downloadBtn = document.getElementById('download-btn');
         downloadBtn.style.display = 'none';
+        const shareButtons = document.getElementById('share-buttons');
+        shareButtons.style.display = 'none';
         const imageUrlField = document.getElementById('image-url');
         const imageUrlValue = imageUrlField?.value.trim();
         if ((!fileInput.files || fileInput.files.length === 0) && !imageUrlValue) {
@@ -452,6 +499,13 @@ let photoTaken = false;
               resultImg.src = data.imageUrl;
               resultImg.style.display = 'block';
               downloadBtn.style.display = 'inline-block';
+              shareButtons.style.display = 'block';
+
+              const imageUrl = encodeURIComponent(data.imageUrl);
+              document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?url=${imageUrl}&text=Check out my AI-generated art!`;
+              document.getElementById('share-facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${imageUrl}`;
+              document.getElementById('share-pinterest').href = `https://pinterest.com/pin/create/button/?url=${imageUrl}&media=${imageUrl}&description=AI-generated art`;
+
               downloadBtn.onclick = async () => {
                 try {
                   const response = await fetch(resultImg.src, {
@@ -502,6 +556,28 @@ let photoTaken = false;
         }
       });
       const randomizeBtn = document.getElementById('randomize-style');
+      const surpriseMeBtn = document.getElementById('surprise-me');
+
+      surpriseMeBtn.addEventListener('click', () => {
+        const models = Array.from(modelSelect.options).map(opt => opt.value);
+        const randomModel = models[Math.floor(Math.random() * models.length)];
+        modelSelect.value = randomModel;
+
+        initializeStyles().then(() => {
+            const styles = Array.from(styleSelect.options).map(opt => opt.value);
+            const randomStyle = styles[Math.floor(Math.random() * styles.length)];
+            styleSelect.value = randomStyle;
+
+            const word = randomModel === 'photomaker' ? 'img' : 'image';
+            customPromptInput.value = `A portrait ${word} in the style of ${randomStyle}`;
+
+            form.dispatchEvent(new Event('submit', {
+                bubbles: true,
+                cancelable: true
+            }));
+        });
+      });
+
       randomizeBtn.addEventListener('click', () => {
         const selectedModel = modelSelect.value;
         if (selectedModel === 'fofr') {
