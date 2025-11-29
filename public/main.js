@@ -1,4 +1,4 @@
-let photoTaken = false;
+      let photoTaken = false;
       const shutterSound = new Audio('shutter.wav');
       let stylesList = [];
       const styleSelect = document.getElementById('style-select');
