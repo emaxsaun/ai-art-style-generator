@@ -6,7 +6,8 @@ const {
     getStyles
 } = require('../controllers/styleController');
 const {
-    uploadImage
+    uploadImage,
+    createCollage
 } = require('../controllers/imageController');
 
 const router = express.Router();
@@ -45,5 +46,6 @@ const upload = multer({
 
 router.get('/styles', getStyles);
 router.post('/upload', upload.single('photo'), uploadImage);
+router.post('/collage', upload.single('photo'), createCollage);
 
 module.exports = router;

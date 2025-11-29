@@ -108,6 +108,105 @@ async function uploadImage(req, res, next) {
     }
 }
 
+const axios = require('axios');
+
+async function createCollage(req, res, next) {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                error: 'No image provided'
+            });
+        }
+
+        const originalPath = req.file.path;
+        const rgbPath = `${originalPath}-rgb.jpg`;
+
+        await sharp(originalPath)
+            .resize(1024, 1024)
+            .toColorspace('srgb')
+            .jpeg()
+            .toFile(rgbPath);
+
+        await fs.promises.unlink(originalPath);
+
+        const isLocal = req.get('host').includes('localhost') || req.hostname === '127.0.0.1';
+        let imageUrl;
+        if (isLocal) {
+            const buffer = await fs.promises.readFile(rgbPath);
+            const base64 = buffer.toString('base64');
+            imageUrl = `data:image/jpeg;base64,${base64}`;
+        } else {
+            const filename = path.basename(rgbPath);
+            imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
+        }
+
+        const shuffledStyles = styles.sort(() => 0.5 - Math.random());
+        const selectedStyles = shuffledStyles.slice(0, 4);
+
+        const imagePromises = selectedStyles.map(style => {
+            const prompt = `A portrait image in the style of ${style}`;
+            return generateImage(imageUrl, prompt, 'pulid', style);
+        });
+
+        const generatedImages = await Promise.all(imagePromises);
+
+        const imageBuffers = await Promise.all(generatedImages.map(async (url) => {
+            const response = await axios({
+                url,
+                responseType: 'arraybuffer'
+            });
+            return Buffer.from(response.data);
+        }));
+
+        const collagePath = `${rgbPath}-collage.jpg`;
+        await sharp({
+                create: {
+                    width: 2048,
+                    height: 2048,
+                    channels: 4,
+                    background: {
+                        r: 255,
+                        g: 255,
+                        b: 255,
+                        alpha: 1
+                    }
+                }
+            })
+            .composite([{
+                input: imageBuffers[0],
+                gravity: 'northwest'
+            }, {
+                input: imageBuffers[1],
+                gravity: 'northeast'
+            }, {
+                input: imageBuffers[2],
+                gravity: 'southwest'
+            }, {
+                input: imageBuffers[3],
+                gravity: 'southeast'
+            }])
+            .toFile(collagePath);
+
+        const collageFilename = path.basename(collagePath);
+        const collageUrl = `${req.protocol}://${req.get('host')}/uploads/${collageFilename}`;
+
+        res.json({
+            success: true,
+            message: 'Collage created successfully',
+            imageUrl: collageUrl
+        });
+
+        await fs.promises.unlink(rgbPath);
+        await fs.promises.unlink(collagePath);
+
+    } catch (err) {
+        console.error('Collage creation error:', err);
+        next(err);
+    }
+}
+
 module.exports = {
-    uploadImage
+    uploadImage,
+    createCollage
 };

@@ -57,12 +57,19 @@
           </label>
           <textarea id="custom-prompt" name="prompt" rows="4" style="width: 97%; padding: 8px; border-radius: 8px; border: none; margin-bottom: 24px;"></textarea>
           <button id="randomize-style" type="button" style="background: #4caf50; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.6);">🔀 Randomize Style</button>
+          <button id="surprise-me" type="button" style="background: #ff9800; box-shadow: 0 4px 15px rgba(255, 152, 0, 0.6); margin-left: 10px;">🤯 Surprise Me</button>
         </div>
         <button type="submit" style="width: 250px;">Generate Photo</button>
+        <button id="generate-collage" type="button" style="background: #2196f3; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.6); margin-top: 10px; width: 250px;">Generate Collage</button>
       </form>
       <div id="style-display"></div>
       <img id="result-img" alt="Generated Photo" />
       <button id="download-btn" style="display: none; margin-top: 12px;">⬇️ Download Image</button>
+      <div id="share-buttons" style="display: none; margin-top: 10px;">
+        <a id="share-twitter" href="#" target="_blank" style="margin-right: 10px;">Twitter</a>
+        <a id="share-facebook" href="#" target="_blank" style="margin-right: 10px;">Facebook</a>
+        <a id="share-pinterest" href="#" target="_blank">Pinterest</a>
+      </div>
       <div id="loading-spinner"></div>
       <progress id="progress-bar" value="0" max="100" style="width: 100%; display: none;"></progress>
       <div id="progress-text" style="color: white; font-weight: bold; margin-top: 8px; display: none;">0%</div>
