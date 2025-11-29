@@ -510,6 +510,20 @@ let photoTaken = false;
               document.getElementById('share-facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${imageUrl}`;
               document.getElementById('share-pinterest').href = `https://pinterest.com/pin/create/button/?url=${imageUrl}&media=${imageUrl}&description=AI-generated art`;
 
+              const shareInstagram = document.getElementById('share-instagram');
+              shareInstagram.addEventListener('click', (e) => {
+                e.preventDefault();
+                navigator.clipboard.writeText(data.imageUrl).then(() => {
+                  const originalText = shareInstagram.textContent;
+                  shareInstagram.textContent = 'Copied!';
+                  setTimeout(() => {
+                    shareInstagram.textContent = originalText;
+                  }, 2000);
+                }).catch(err => {
+                  console.error('Failed to copy text: ', err);
+                });
+              });
+
               downloadBtn.onclick = async () => {
                 try {
                   const response = await fetch(resultImg.src, {
