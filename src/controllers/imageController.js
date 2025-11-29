@@ -11,6 +11,11 @@ const {
 
 async function uploadImage(req, res, next) {
     try {
+        const {
+            selectedStyle,
+            customPrompt,
+            model
+        } = req.body;
         const imageUrlInput = req.body.imageUrl?.trim();
         let imageUrl;
         let rgbPath;
@@ -30,7 +35,20 @@ async function uploadImage(req, res, next) {
             const originalPath = req.file.path;
             rgbPath = `${originalPath}-rgb.jpg`;
 
+            let width, height;
+            if (model === 'photomaker') {
+                width = 512;
+                height = 512;
+            } else if (model === 'fofr') {
+                width = 768;
+                height = 768;
+            } else {
+                width = 768;
+                height = 1024;
+            }
+
             await sharp(originalPath)
+                .resize(width, height)
                 .toColorspace('srgb')
                 .jpeg()
                 .toFile(rgbPath);
@@ -50,12 +68,6 @@ async function uploadImage(req, res, next) {
                 imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
             }
         }
-
-        const {
-            selectedStyle,
-            customPrompt,
-            model
-        } = req.body;
 
         const fallbackStyle = model === 'fofr' ?
             fofrStyles[Math.floor(Math.random() * fofrStyles.length)] :
