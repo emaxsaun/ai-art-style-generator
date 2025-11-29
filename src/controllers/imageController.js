@@ -198,7 +198,6 @@ async function createCollage(req, res, next) {
         });
 
         await fs.promises.unlink(rgbPath);
-        await fs.promises.unlink(collagePath);
 
     } catch (err) {
         console.error('Collage creation error:', err);
