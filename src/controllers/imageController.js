@@ -156,7 +156,9 @@ async function createCollage(req, res, next) {
                 url,
                 responseType: 'arraybuffer'
             });
-            return Buffer.from(response.data);
+            return sharp(response.data)
+                .resize(1024, 1024)
+                .toBuffer();
         }));
 
         const collagePath = `${rgbPath}-collage.jpg`;
@@ -175,16 +177,20 @@ async function createCollage(req, res, next) {
             })
             .composite([{
                 input: imageBuffers[0],
-                gravity: 'northwest'
+                top: 0,
+                left: 0
             }, {
                 input: imageBuffers[1],
-                gravity: 'northeast'
+                top: 0,
+                left: 1024
             }, {
                 input: imageBuffers[2],
-                gravity: 'southwest'
+                top: 1024,
+                left: 0
             }, {
                 input: imageBuffers[3],
-                gravity: 'southeast'
+                top: 1024,
+                left: 1024
             }])
             .toFile(collagePath);
 
